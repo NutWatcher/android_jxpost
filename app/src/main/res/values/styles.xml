@@ -1,0 +1,12 @@
+<resources>
+
+
+    <style name="IndexTheme" parent="android:Theme.Black.NoTitleBar">
+        <item name="android:windowTitleSize">50dp</item>
+    </style>
+    <style name="AppTheme" parent="android:Theme.Black">
+        <item name="android:windowTitleSize">50dp</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+</resources>

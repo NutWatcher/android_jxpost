@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/my_black_color"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:contentDescription="@string/app_name"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/back_button"
+        android:background="@color/my_black_color"
+        android:id="@+id/title_imageButton_back" />
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:gravity="center_vertical"
+        android:textColor="@color/my_white_color"
+        android:text="这里是标题" />
+    <LinearLayout
+        android:gravity="center_vertical|end"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageButton
+            android:contentDescription="@string/app_name"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/search_button"
+            android:background="@color/my_black_color"
+            android:id="@+id/title_imageButton_search" />
+    </LinearLayout>
+</LinearLayout>

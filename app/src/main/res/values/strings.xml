@@ -1,0 +1,23 @@
+<resources>
+    <color name="my_black_color">#ff000000</color>
+    <color name="my_gray_color">#ffebebeb</color>
+    <color name="my_deepgray_color">#ff999999</color>
+    <color name="my_white_color">#ffffffff</color>
+    <color name="my_orange_color">#ffff5d21</color>
+
+
+    <string name="app_name">嘉兴邮政</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_activity__account_list">Activity_AccountList</string>
+
+
+
+
+
+    <string name="temp_name">张三</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
