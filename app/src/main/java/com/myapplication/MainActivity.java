@@ -19,9 +19,9 @@ import com.adapter.Adapter_GradView;
 public class MainActivity extends Activity {
     private GridView gridView;
     private String[] titles = new String[]
-            { "协储", "设置", "pic3", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
+            {"个人协储", "设置", "部门协储", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
     private int[] images = new int[]{
-            R.drawable.xiechu, R.drawable.shezhi, R.drawable.xiechu,
+            R.drawable.xiechu, R.drawable.shezhi, R.drawable.department_xiechu,
             R.drawable.xiechu, R.drawable.xiechu, R.drawable.xiechu,
             R.drawable.xiechu, R.drawable.xiechu, R.drawable.xiechu
     };
@@ -39,8 +39,10 @@ public class MainActivity extends Activity {
                 if (id == 0){
                     Intent intent = new Intent(MainActivity.this, Activity_AccountList.class);
                     startActivityForResult(intent, 1);
+                } else if (id == 2) {
+                    Intent intent = new Intent(MainActivity.this, Activity_DepartmentAccount.class);
+                    startActivityForResult(intent, 1);
                 }
-                else
                 Toast.makeText(MainActivity.this, "id" + id, Toast.LENGTH_SHORT).show();
             }
         });
