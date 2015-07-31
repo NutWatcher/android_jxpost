@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/my_deepgray_color"
-                android:text="日均余额：" />
+                android:text="当前余额：" />
 
             <TextView
                 android:gravity="end"

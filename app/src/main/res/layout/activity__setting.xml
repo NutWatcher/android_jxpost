@@ -62,7 +62,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="40dp"
             android:background="@color/my_white_color"
-            android:id="@+id/new"
+            android:id="@+id/new_version"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="检测更新"

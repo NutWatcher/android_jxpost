@@ -1,8 +1,9 @@
 package com.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,18 +12,24 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.adapter.Adapter_GradView;
+import com.fragment.Fragment_AccountInfo;
+import com.fragment.Fragment_AccountList;
+import com.fragment.Fragment_AccountSearch;
 
 
 public class MainActivity extends Activity {
+
+    private int userId ;
     private GridView gridView;
     private String[] titles = new String[]
-            {"个人协储", "设置", "部门协储", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
+            {"个人协储", "部门信息", "网点余额", "设置", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
     private int[] images = new int[]{
-            R.drawable.xiechu, R.drawable.shezhi, R.drawable.department_xiechu,
-            R.drawable.xiechu, R.drawable.xiechu, R.drawable.xiechu,
+            R.drawable.user_account, R.drawable.department_user_account, R.drawable.shop_account,
+            R.drawable.setting, R.drawable.xiechu, R.drawable.xiechu,
             R.drawable.xiechu, R.drawable.xiechu, R.drawable.xiechu
     };
 
@@ -30,9 +37,24 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initWidget();
+        initData();
+        initEvent();
 
+    }
+
+    private void initWidget() {
         gridView = (GridView)findViewById(R.id.gridView);
+    }
+    private  void initData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        userId = sharedPreferences.getInt("userId", 0);
         gridView.setAdapter(new Adapter_GradView(titles, images, this));
+
+    }
+
+    private void initEvent(){
         gridView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -47,7 +69,6 @@ public class MainActivity extends Activity {
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

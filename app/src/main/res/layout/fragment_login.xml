@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loginFragment"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_margin="10dp"
+        android:id="@+id/et_loginFragment_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/et_loginFragment_name_hint"
+        android:textSize="30sp"
+        android:background="@drawable/my_textedit_bg"
+        android:layout_above="@+id/et_loginFragment_password"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:layout_margin="10dp"
+        android:id="@+id/et_loginFragment_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:gravity="center"
+        android:hint="@string/et_loginFragment_password_hint"
+        android:textSize="30sp"
+        android:background="@drawable/my_textedit_bg"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:id="@+id/btn_loginFragment_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_loginFragment_login_title"
+        android:layout_below="@+id/et_loginFragment_password"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
