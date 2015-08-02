@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.adapter.Adapter_GradView;
+import com.application.R;
 import com.fragment.Fragment_AccountInfo;
 import com.fragment.Fragment_AccountList;
 import com.fragment.Fragment_AccountSearch;
@@ -40,25 +41,33 @@ public class MainActivity extends Activity {
         initWidget();
         initData();
         initEvent();
-
+        checkLogin();
     }
 
     private void initWidget() {
         gridView = (GridView)findViewById(R.id.gridView);
     }
     private  void initData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-        userId = sharedPreferences.getInt("userId", 0);
+
         gridView.setAdapter(new Adapter_GradView(titles, images, this));
+
 
     }
 
+    private void checkLogin() {
+        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        userId = Integer.parseInt(sharedPreferences.getString("userId", "0"));
+        if (userId == 0) {
+            Intent intent = new Intent(MainActivity.this, Activity_Login.class);
+            startActivityForResult(intent, 1);
+        }
+    }
     private void initEvent(){
         gridView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (id == 0){
+                if (id == 0) {
                     Intent intent = new Intent(MainActivity.this, Activity_AccountList.class);
                     startActivityForResult(intent, 1);
                 } else if (id == 2) {
@@ -89,5 +98,9 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        checkLogin();
     }
 }

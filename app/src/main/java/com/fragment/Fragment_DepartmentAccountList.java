@@ -91,8 +91,8 @@ public class Fragment_DepartmentAccountList extends Fragment {
     private void initWidget() {
 
         listView = (ListView) getActivity().findViewById(R.id.account_listView);
-        //textView = (TextView) getActivity().findViewById(R.id.worning);
-        //textView.setVisibility(View.GONE);
+        textView = (TextView) getActivity().findViewById(R.id.tv_worning);
+        textView.setVisibility(View.GONE);
 
     }
 
@@ -113,11 +113,11 @@ public class Fragment_DepartmentAccountList extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int selectedPosition = i;
-                Map<String, String> map = dataList.get(i);
-                Log.i("select", "name: " + map.get("name") + " rank: " + map.get("rank"));
-                Log.i("fragment_log", String.valueOf(selectedPosition));
-                mListener.OnFragment_DepartmentAccountLIst_ListItemClick(Integer.parseInt(map.get("rank")));
+//                int selectedPosition = i;
+//                Map<String, String> map = dataList.get(i);
+//                Log.i("select", "name: " + map.get("name") + " rank: " + map.get("rank"));
+//                Log.i("fragment_log", String.valueOf(selectedPosition));
+//                mListener.OnFragment_DepartmentAccountLIst_ListItemClick(Integer.parseInt(map.get("rank")));
             }
         });
     }

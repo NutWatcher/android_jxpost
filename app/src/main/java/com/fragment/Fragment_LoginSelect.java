@@ -4,12 +4,22 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.myapplication.Activity_AccountList;
 import com.myapplication.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,26 +30,21 @@ import com.myapplication.R;
  * create an instance of this fragment.
  */
 public class Fragment_LoginSelect extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
+
+    ListView lv_fragment_login_userlist;
+    private List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    private SimpleAdapter adapter;
+    TextView textView;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_LoginSelect.
-     */
-    // TODO: Rename and change types and number of parameters
     public static Fragment_LoginSelect newInstance(String param1, String param2) {
         Fragment_LoginSelect fragment = new Fragment_LoginSelect();
         Bundle args = new Bundle();
@@ -48,11 +53,8 @@ public class Fragment_LoginSelect extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     public Fragment_LoginSelect() {
-        // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,13 +71,45 @@ public class Fragment_LoginSelect extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    public void onActivityCreated(Bundle savedInstanceState) {
+        initWidget();
+        initData();
+        initEvent();
+        super.onActivityCreated(savedInstanceState);
     }
 
+    private void initWidget() {
+        lv_fragment_login_userlist = (ListView) getActivity().findViewById(R.id.lv_fragment_login_userlist);
+        textView = (TextView) getActivity().findViewById(R.id.worning);
+        textView.setVisibility(View.GONE);
+
+    }
+
+    private void initData() {
+        for (int i = 0; i < 10; i++) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("name", "战三");
+            map.put("money", "800004.56");
+            map.put("account", "54684984896849698498");
+            dataList.add(map);
+        }
+        adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_accountlist_item,
+                new String[]{"name", "money", "account"}, new int[]{R.id.listname, R.id.listmoney, R.id.account});
+        lv_fragment_login_userlist.setAdapter(adapter);
+    }
+
+    private void initEvent() {
+        lv_fragment_login_userlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int selectedPosition = i;
+                Map<String, String> map = dataList.get(i);
+                Log.i("select", "userid: " + map.get("userId") + " name: " + map.get("name"));
+                Log.i("fragment_log", String.valueOf(selectedPosition));
+                mListener.onFragmentUserSelect(Integer.parseInt(map.get("userId")));
+            }
+        });
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -105,7 +139,7 @@ public class Fragment_LoginSelect extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentUserSelect(int userId);
     }
 
 }

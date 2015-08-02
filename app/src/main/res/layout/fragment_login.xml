@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/loginFragment"
     android:orientation="vertical"
+    android:background="@color/my_white_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="@string/et_loginFragment_name_hint"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:background="@drawable/my_textedit_bg"
         android:layout_above="@+id/et_loginFragment_password"
         android:layout_centerHorizontal="true"/>
@@ -25,7 +26,7 @@
         android:inputType="textPassword"
         android:gravity="center"
         android:hint="@string/et_loginFragment_password_hint"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:background="@drawable/my_textedit_bg"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
@@ -34,9 +35,12 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:id="@+id/btn_loginFragment_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
         android:text="@string/btn_loginFragment_login_title"
+        android:textSize="20sp"
+        android:background="@color/my_orange_color"
+        android:textColor="@color/my_white_color"
         android:layout_below="@+id/et_loginFragment_password"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
