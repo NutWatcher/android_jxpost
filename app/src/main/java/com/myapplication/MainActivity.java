@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
@@ -16,10 +18,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.adapter.Adapter_GradView;
-import com.application.R;
-import com.fragment.Fragment_AccountInfo;
-import com.fragment.Fragment_AccountList;
-import com.fragment.Fragment_AccountSearch;
 
 
 public class MainActivity extends Activity {
@@ -36,7 +34,9 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initWidget();
         initData();
@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
         SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
         userId = Integer.parseInt(sharedPreferences.getString("userId", "0"));
+        Log.d("main", String.valueOf(userId));
         if (userId == 0) {
             Intent intent = new Intent(MainActivity.this, Activity_Login.class);
             startActivityForResult(intent, 1);
@@ -72,6 +73,9 @@ public class MainActivity extends Activity {
                     startActivityForResult(intent, 1);
                 } else if (id == 2) {
                     Intent intent = new Intent(MainActivity.this, Activity_DepartmentAccount.class);
+                    startActivityForResult(intent, 1);
+                } else if (id == 3) {
+                    Intent intent = new Intent(MainActivity.this, Activity_Setting.class);
                     startActivityForResult(intent, 1);
                 }
                 Toast.makeText(MainActivity.this, "id" + id, Toast.LENGTH_SHORT).show();

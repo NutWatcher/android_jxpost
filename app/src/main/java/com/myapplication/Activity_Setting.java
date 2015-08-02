@@ -1,75 +1,102 @@
 package com.myapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.application.R;
 import com.communicate.Con_UpdataXml;
-import com.fragment.Fragment_Login;
-import com.fragment.Fragment_LoginSelect;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.fragment.Fragment_About;
+import com.fragment.Fragment_Setting;
 import java.util.HashMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+public class Activity_Setting extends FragmentActivity implements
+        Fragment_Setting.OnFragmentInteractionListener,
+        Fragment_About.OnFragmentInteractionListener {
 
-
-public class Activity_Setting extends Activity {
-
+    private boolean isIndexView;
     private TextView tv_logout;
     private TextView tv_about;
     private TextView tv_new_version;
     private Context mContext;
+    private TextView tv_title;
 
-    public Activity_Setting(Context context) {
-        this.mContext = context;
+    ImageButton imageButton_Back;
+    ImageButton imageButton_Search;
+
+    Fragment_Setting fragment_setting;
+    Fragment_About fragment_about;
+    FragmentManager fragmentManager;
+
+    public Activity_Setting() {
+        this.mContext = this;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity__setting);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_account);
         initWidget();
         initData();
         initEvent();
     }
 
     private void initWidget() {
-        tv_logout = (TextView) findViewById(R.id.tv_logout);
-        tv_about = (TextView) findViewById(R.id.tv_about);
-        tv_new_version = (TextView) findViewById(R.id.tv_new_version);
+        tv_title = (TextView) findViewById(R.id.title_text);
+        fragment_setting = new Fragment_Setting();
+        fragment_about = new Fragment_About();
+        fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.frame, fragment_setting);
+        fragmentTransaction.commit();
+        imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
+        imageButton_Search = (ImageButton) findViewById(R.id.title_imageButton_search);
     }
 
     private void initData() {
-
+        isIndexView = true;
+        tv_title.setText("设置");
+        imageButton_Search.setVisibility(View.GONE);
     }
 
     private void initEvent() {
-        tv_logout.setOnClickListener(new View.OnClickListener() {
+        imageButton_Back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-                editor.putString("userId", "0");
-                Activity_Setting.this.setResult(RESULT_OK);
-                Activity_Setting.this.finish();
+            public void onClick(View view) {
+                onTitleBackButtonClick();
             }
         });
+    }
+
+    private void onTitleBackButtonClick() {
+        if (isIndexView) {
+            Activity_Setting.this.setResult(RESULT_OK);
+            Activity_Setting.this.finish();
+        } else {
+            // switchContent();
+        }
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            onTitleBackButtonClick();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,5 +148,21 @@ public class Activity_Setting extends Activity {
             e.printStackTrace();
         }
         return versionCode;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onLogout() {
+        Log.i("setting", "logout");
+        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        editor.putString("userId", "0");
+        editor.commit();
+        Activity_Setting.this.setResult(RESULT_OK);
+        Activity_Setting.this.finish();
     }
 }

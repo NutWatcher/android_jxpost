@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
-import com.application.R;
 import com.fragment.Fragment_AccountInfo;
 import com.fragment.Fragment_AccountList;
 import com.fragment.Fragment_AccountSearch;

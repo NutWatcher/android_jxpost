@@ -4,42 +4,28 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.myapplication.Activity_AccountList;
 import com.myapplication.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Fragment_Login.OnFragmentInteractionListener} interface
+ * {@link Fragment_About.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Fragment_Login#newInstance} factory method to
+ * Use the {@link Fragment_About#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Login extends Fragment {
-
-    Button btnSubmit;
-    EditText et_loginFragment_name;
-    EditText et_loginFragment_password;
-
+public class Fragment_About extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -51,10 +37,11 @@ public class Fragment_Login extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Login.
+     * @return A new instance of fragment Fragment_About.
      */
-    public static Fragment_Login newInstance(String param1, String param2) {
-        Fragment_Login fragment = new Fragment_Login();
+    // TODO: Rename and change types and number of parameters
+    public static Fragment_About newInstance(String param1, String param2) {
+        Fragment_About fragment = new Fragment_About();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -62,7 +49,7 @@ public class Fragment_Login extends Fragment {
         return fragment;
     }
 
-    public Fragment_Login() {
+    public Fragment_About() {
         // Required empty public constructor
     }
 
@@ -78,47 +65,16 @@ public class Fragment_Login extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, null);
-        return view;
+        TextView textView = new TextView(getActivity());
+        textView.setText(R.string.hello_blank_fragment);
+        return textView;
     }
 
-    public void onActivityCreated(Bundle savedInstanceState) {
-        initWidget();
-        initData();
-        initEvent();
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    private void initWidget() {
-        btnSubmit = (Button) getActivity().findViewById(R.id.btn_loginFragment_login);
-        et_loginFragment_name = (EditText) getActivity().findViewById(R.id.et_loginFragment_name);
-        ;
-        et_loginFragment_password = (EditText) getActivity().findViewById(R.id.et_loginFragment_password);
-        ;
-    }
-
-    private void initData() {
-
-    }
-
-    private void initEvent() {
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = String.valueOf(et_loginFragment_name.getText());
-                String password = String.valueOf(et_loginFragment_password.getText());
-                if (password.equals("") || name.equals("")) {
-                    Toast.makeText(getActivity(), "密码用户名不能为空！", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Bundle bundle = new Bundle();
-                bundle.putString("name", name);
-                bundle.putString("password", password);
-                if (mListener != null) {
-                    mListener.onSubmit(bundle);
-                }
-            }
-        });
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
     }
 
     @Override
@@ -150,7 +106,7 @@ public class Fragment_Login extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onSubmit(Bundle bundle);
+        public void onFragmentInteraction(Uri uri);
     }
 
 }

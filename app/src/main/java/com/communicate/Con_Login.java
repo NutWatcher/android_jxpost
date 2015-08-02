@@ -1,16 +1,9 @@
 package com.communicate;
 
-import android.util.Log;
-
-import com.myapplication.MyApplication;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,38 +13,63 @@ import java.util.Map;
 public class Con_Login extends Con_Base {
     private Map<String, String> params;
     private String result;
-    private static final String URL_USERLIST = "/HuResources";
+    private Handler handler;
+    private static final String URL_USERLIST = "/userlist";
     private static final String URL_LOGIN = "/login";
 
-    public Con_Login() {
+    public Con_Login(Handler handler) {
+        this.handler = handler;
     }
 
-    public String getUserList(String name) {
-        params = new HashMap<>();
-        params.put("q", name);
-        initCon_Post(URL_USERLIST);
-        SetParams(params);
-        try {
-            result = getDate();
-        } catch (IOException e) {
-            result = null;
-            e.printStackTrace();
+    public void getUserList(final String name) {
+        class downloadApkThread extends Thread {
+            @Override
+            public void run() {
+                params = new HashMap<>();
+                params.put("q", name);
+                initCon_Post(URL_USERLIST);
+                SetParams(params);
+                try {
+                    result = getDate();
+                } catch (IOException e) {
+                    result = null;
+                    e.printStackTrace();
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putString("result", result);
+                data.putString("method", "userList");
+                msg.setData(data);
+                handler.sendMessage(msg);
+            }
         }
-        return result;
+        new downloadApkThread().start();
     }
 
-    public String checkPassword(int userId, String password) {
-        params = new HashMap<>();
-        params.put("userId", String.valueOf(userId));
-        params.put("password", password);
-        initCon_Post(URL_USERLIST);
-        SetParams(params);
-        try {
-            result = getDate();
-        } catch (IOException e) {
-            result = null;
-            e.printStackTrace();
+    public void checkPassword(final int userId, final String password) {
+        class downloadApkThread1 extends Thread {
+            @Override
+            public void run() {
+                params = new HashMap<>();
+                params.put("userId", String.valueOf(userId));
+                params.put("password", password);
+                initCon_Post(URL_LOGIN);
+                SetParams(params);
+                try {
+                    result = getDate();
+                } catch (IOException e) {
+                    result = null;
+                    e.printStackTrace();
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putString("result", result);
+                data.putString("method", "checkPassword");
+                msg.setData(data);
+                handler.sendMessage(msg);
+            }
         }
-        return result;
+        new downloadApkThread1().start();
     }
+
 }

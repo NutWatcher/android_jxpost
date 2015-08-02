@@ -1,96 +1,19 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/my_gray_color"
-    tools:context="com.imooc.weixin6_0.Fragment_userInfo">
+    tools:context=".MainActivity">
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/my_gray_color" />
-    <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="40dp"
-                android:background="@color/my_white_color"
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="修改密码"
-                android:textColor="@color/my_black_color"
-                android:textSize="25sp" />
-        </LinearLayout>
-    -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/my_gray_color" />
-
-    <LinearLayout
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/my_gray_color"
+        tools:context=".MainActivity">
 
-        <TextView
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="40dp"
-            android:background="@color/my_white_color"
-            android:id="@+id/tv_about"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="关于"
-            android:textColor="@color/my_black_color"
-            android:textSize="25sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/my_gray_color" />
-
-        <TextView
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="40dp"
-            android:background="@color/my_white_color"
-            android:id="@+id/tv_new_version"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="检测更新"
-            android:textColor="@color/my_black_color"
-            android:textSize="25sp" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/my_gray_color" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_margin="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:gravity="center_horizontal"
-            android:background="@color/my_orange_color"
-            android:id="@+id/tv_logout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="退出登录"
-            android:textColor="@color/my_white_color"
-            android:textSize="25sp" />
-    </LinearLayout>
-</LinearLayout>
+    </FrameLayout>
+</FrameLayout>

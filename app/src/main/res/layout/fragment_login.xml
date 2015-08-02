@@ -7,31 +7,36 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:id="@+id/et_loginFragment_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="@string/et_loginFragment_name_hint"
-        android:textSize="20sp"
+        android:textSize="30sp"
+        android:textColorHint="@color/my_deepgray_color"
+        android:textColor="@color/my_black_color"
         android:background="@drawable/my_textedit_bg"
         android:layout_above="@+id/et_loginFragment_password"
         android:layout_centerHorizontal="true"/>
 
     <EditText
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:id="@+id/et_loginFragment_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:gravity="center"
         android:hint="@string/et_loginFragment_password_hint"
-        android:textSize="20sp"
+        android:textSize="30sp"
+        android:textColorHint="@color/my_deepgray_color"
+        android:textColor="@color/my_black_color"
         android:background="@drawable/my_textedit_bg"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <Button
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:id="@+id/btn_loginFragment_login"

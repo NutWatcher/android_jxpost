@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -17,42 +18,31 @@ import java.util.Map;
 /**
  * Created by 扬洋 on 2015/8/1.
  */
-public class Con_Base {
+public class Con_Base extends Thread {
     private HttpURLConnection conn;
     private String resultData = "";
     private URL url = null;
-    private String name;
     private String con_url;
 
-    private static final String NAME = "MyApplication";
-    private static final String CON_URL = "http://10.140.0.42:8080/HuResources";
+    //private static final String CON_URL = "http://10.140.0.42:8080/HuResources";
+    private static final String CON_URL = "http://192.168.1.101:3000";
 
     Con_Base() {
-        setName(NAME);
         setCon_url(CON_URL);
-
-
     }
-
     public String getCon_url() {
         return con_url;
     }
-
     public void setCon_url(String con_url) {
         this.con_url = con_url;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public void initCon_Post(String URL) {
         try {
-            conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
             url = new URL(getCon_url() + URL);
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -93,9 +83,11 @@ public class Con_Base {
         }
         isr.close();
         conn.disconnect();
-        Log.i("con", resultData);
+        Log.i("con_base", resultData);
         return resultData;
     }
 
-
+    public void run() {
+        initCon_Post("ddd");
+    }
 }
