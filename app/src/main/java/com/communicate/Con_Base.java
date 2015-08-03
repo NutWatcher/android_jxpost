@@ -38,13 +38,13 @@ public class Con_Base extends Thread {
     }
 
 
-    public void initCon_Post(String URL) {
-        try {
+    public void initCon_Post(String URL) throws IOException {
             if (conn != null) {
                 conn.disconnect();
             }
             url = new URL(getCon_url() + URL);
             conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(5000);
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setRequestMethod("POST");
@@ -52,13 +52,9 @@ public class Con_Base extends Thread {
             conn.setInstanceFollowRedirects(true);
             conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows XP; DigExt)");
             conn.setRequestProperty("Content - Type", "application / x - www - form - urlencoded");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void SetParams(Map<String, String> params) {
-        try {
+    public void SetParams(Map<String, String> params) throws IOException {
             String content = "";
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
             for (String key : params.keySet()) {
@@ -68,9 +64,7 @@ public class Con_Base extends Thread {
             dos.writeBytes(content);
             dos.flush();
             dos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public String getDate() throws IOException {
@@ -85,9 +79,5 @@ public class Con_Base extends Thread {
         conn.disconnect();
         Log.i("con_base", resultData);
         return resultData;
-    }
-
-    public void run() {
-        initCon_Post("ddd");
     }
 }

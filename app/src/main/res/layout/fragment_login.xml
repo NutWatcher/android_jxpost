@@ -48,4 +48,14 @@
         android:textColor="@color/my_white_color"
         android:layout_below="@+id/et_loginFragment_password"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_above="@+id/et_loginFragment_name"
+        android:src="@mipmap/post_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp" />
 </RelativeLayout>

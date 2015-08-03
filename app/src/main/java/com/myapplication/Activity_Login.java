@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.model.User;
+import com.tool.LoadingDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,8 @@ public class Activity_Login extends FragmentActivity implements
         Fragment_LoginSelect.OnFragmentInteractionListener {
 
 
+    private Context mContext;
+    private LoadingDialog dialog;
     private boolean isFragmentSelectShow;
     private int userId;
     private String password;
@@ -60,6 +63,7 @@ public class Activity_Login extends FragmentActivity implements
     }
 
     private void initWidget() {
+        dialog = new LoadingDialog(this);
         fragment_login = new Fragment_Login();
         fragment_loginSelect = new Fragment_LoginSelect();
         fragmentManager = getSupportFragmentManager();
@@ -69,6 +73,8 @@ public class Activity_Login extends FragmentActivity implements
     }
 
     private void initData() {
+        mContext = this;
+        dialog.setCanceledOnTouchOutside(false);
         isFragmentSelectShow = false;
     }
 
@@ -110,9 +116,7 @@ public class Activity_Login extends FragmentActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -141,11 +145,18 @@ public class Activity_Login extends FragmentActivity implements
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            backFragment_Login();
             Log.d("login handler", String.valueOf(userId));
             super.handleMessage(msg);
             Bundle data = msg.getData();
             String method = data.getString("method");
+            if (dialog.isShowing()) {
+                dialog.hide();
+            }
+            if (method.equals("con_failed")) {
+                Toast.makeText(mContext, "网络连接失败", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            backFragment_Login();
             if (method.equals("userList")) {
                 selectUserId(data.getString("result"));
             } else if (method.equals("checkPassword")) {
@@ -174,6 +185,8 @@ public class Activity_Login extends FragmentActivity implements
     public void onSubmit(Bundle bundle) {
         String name = bundle.getString("name");
         password = bundle.getString("password");
+        dialog.show();
+        Log.i("loing", "clike");
         Con_Login con_login = new Con_Login(handler);
         con_login.getUserList(name);
     }
@@ -185,6 +198,7 @@ public class Activity_Login extends FragmentActivity implements
     }
 
     private void checkPassword() {
+        dialog.show();
         Con_Login con_login = new Con_Login(handler);
         con_login.checkPassword(userId, password);
     }

@@ -14,5 +14,6 @@
         android:orientation="vertical"
         android:background="@color/my_gray_color"
         tools:context=".MainActivity">
+
     </FrameLayout>
 </FrameLayout>
