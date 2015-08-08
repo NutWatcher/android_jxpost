@@ -1,97 +1,147 @@
 package com.communicate;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import com.model.Department;
+import com.model.User;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
+ * g
  * Created by 扬洋 on 2015/7/30.
  */
-public class Con_DepartmentAccount {
+public class Con_DepartmentAccount extends Con_Base {
+    private Map<String, String> params;
+    private String result;
+    private Handler handler;
+    private static final String URL_DEPARTMENT_USER_ACCOUNT = "/direct/user_androidDepartmentScore";
+    private static final String URL_DEPARTMENT_ACCOUNT = "/direct/branch_androidBranchInfo";
+
     private HttpURLConnection conn;
     private String resultData = "";
     private URL url = null;
 
-    Con_DepartmentAccount(Map<String, String> params) {
-        Init();
-        SetParams(params);
+    public Con_DepartmentAccount(Handler handler) {
+        this.handler = handler;
     }
 
-    //112
-    private void Init() {
-
+    private void setFailed(String result) {
+        Log.i("con_login", "连接服务器出错");
+        Message msg = new Message();
+        Bundle data = new Bundle();
+        data.putString("result", result);
+        data.putString("method", "con_failed");
+        msg.setData(data);
+        handler.sendMessage(msg);
     }
 
-    private void Connection(URL url) {
-        try {
-            url = new URL("http://10.140.0.42:8080/HuResources/view/user_comboByNameKey");
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
-            conn.setUseCaches(false);// Post请求不能使用缓存
-            conn.setInstanceFollowRedirects(true);
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows XP; DigExt)");
-            conn.setRequestProperty("Content - Type", "application / x - www - form - urlencoded");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void SetParams(Map<String, String> params) {
-        try {
-            String content = "";
-            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-            for (String key : params.keySet()) {
-                content += URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8");
-                Log.i("Map", "Key = " + key + ", Value = " + params.get(key));
+    public void getDepartmentUserAccountList() {
+        class downloadApkThread extends Thread {
+            @Override
+            public void run() {
+                try {
+                    params = new HashMap<>();
+                    initCon_Post(URL_DEPARTMENT_USER_ACCOUNT);
+                    SetParams(params);
+                    result = getDate();
+                } catch (IOException e) {
+                    result = "网络连接失败";
+                    setFailed(result);
+                    e.printStackTrace();
+                    return;
+                }
+                List<User> dataList_user = new ArrayList<>();
+                JSONArray js_data;
+                try {
+                    js_data = new JSONArray(result);
+                    for (int i = 0; i < js_data.length(); i++) {
+                        JSONObject jsonObject = (JSONObject) js_data.opt(i);
+                        User user = new User();
+                        try {
+                            user.setData(jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+                        dataList_user.add(user);
+                    }
+                } catch (JSONException e) {
+                    result = "数据转换失败";
+                    setFailed(result);
+                    e.printStackTrace();
+                    return;
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putParcelableArrayList("rows", (ArrayList<? extends Parcelable>) dataList_user);
+                data.putString("method", "user_list");
+                msg.setData(data);
+                handler.sendMessage(msg);
             }
-            dos.writeBytes(content);
-            dos.flush();
-            dos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        new downloadApkThread().start();
     }
 
-    public String getDepartmentListDate() throws IOException {
-        Connection(new URL("http://10.140.0.42:8080/HuResources/view/user_comboByNameKey"));
-        resultData = "";
-        InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-        BufferedReader bufferReader = new BufferedReader(isr);
-        String inputLine = "";
-        while ((inputLine = bufferReader.readLine()) != null) {
-            resultData += inputLine + "\n";
+    public void getDepartmentAccountList() {
+        class downloadApkThread extends Thread {
+            @Override
+            public void run() {
+                try {
+                    params = new HashMap<>();
+                    initCon_Post(URL_DEPARTMENT_ACCOUNT);
+                    SetParams(params);
+                    result = getDate();
+                } catch (IOException e) {
+                    result = "网络连接失败";
+                    setFailed(result);
+                    e.printStackTrace();
+                    return;
+                }
+                List<Department> dataList_department = new ArrayList<>();
+                JSONArray js_data;
+                try {
+                    js_data = new JSONArray(result);
+                    for (int i = 0; i < js_data.length(); i++) {
+                        JSONObject jsonObject = (JSONObject) js_data.opt(i);
+                        Department department = new Department();
+                        try {
+                            department.setData(jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            continue;
+                        }
+                        dataList_department.add(department);
+                    }
+                } catch (JSONException e) {
+                    result = "数据转换失败";
+                    setFailed(result);
+                    e.printStackTrace();
+                    return;
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putParcelableArrayList("rows", (ArrayList<? extends Parcelable>) dataList_department);
+                data.putString("method", "department_list");
+                msg.setData(data);
+                handler.sendMessage(msg);
+            }
         }
-        isr.close();
-        conn.disconnect();
-
-        Log.i("con", resultData);
-        return resultData;
-    }
-
-    public String getDepartmentUserListDate() throws IOException {
-        Connection(new URL("http://10.140.0.42:8080/HuResources/view/user_comboByNameKey"));
-        resultData = "";
-        InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-        BufferedReader bufferReader = new BufferedReader(isr);
-        String inputLine = "";
-        while ((inputLine = bufferReader.readLine()) != null) {
-            resultData += inputLine + "\n";
-        }
-        isr.close();
-        conn.disconnect();
-
-        Log.i("con", resultData);
-        return resultData;
-
+        new downloadApkThread().start();
     }
 }
 

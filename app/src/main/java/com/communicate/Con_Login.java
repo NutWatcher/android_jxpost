@@ -5,19 +5,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * g
  * Created by 扬洋 on 2015/8/1.
  */
 public class Con_Login extends Con_Base {
     private Map<String, String> params;
     private String result;
     private Handler handler;
-    private static final String URL_USERLIST = "/userlist";
-    private static final String URL_LOGIN = "/login";
+    private JSONObject jsonObject;
+    private static final String URL_USERLIST = "/view/user_comboByNameKey";
+    private static final String URL_LOGIN = "/direct/user_androidLogin";
 
     public Con_Login(Handler handler) {
         this.handler = handler;
@@ -78,10 +83,23 @@ public class Con_Login extends Con_Base {
                 }
                 Message msg = new Message();
                 Bundle data = new Bundle();
-                data.putString("result", result);
-                data.putString("method", "checkPassword");
-                msg.setData(data);
-                handler.sendMessage(msg);
+                try {
+                    jsonObject = new JSONObject(result);
+                    boolean success = jsonObject.getBoolean("success");
+                    String message = jsonObject.getString("message");
+                    data.putBoolean("success", success);
+                    data.putString("message", message);
+                    data.putString("method", "checkPassword");
+                    msg.setData(data);
+                    handler.sendMessage(msg);
+                } catch (JSONException e) {
+                    data.putBoolean("success", false);
+                    data.putString("message", "登录错误!");
+                    msg.setData(data);
+                    handler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+
             }
         }
         new downloadApkThread1().start();

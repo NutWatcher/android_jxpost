@@ -1,5 +1,8 @@
 package com.myapplication;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -9,21 +12,57 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.communicate.Con_DepartmentAccount;
 import com.fragment.Fragment_AccountInfo;
 import com.fragment.Fragment_AccountList;
 import com.fragment.Fragment_AccountSearch;
 import com.fragment.Fragment_DepartmentAccountList;
 import com.fragment.Fragment_DepartmentUserAccountList;
+import com.model.Department;
+import com.model.User;
+import com.tool.LoadingDialog;
+
+import java.util.List;
 
 
-public class Activity_DepartmentAccount extends FragmentActivity implements Fragment_DepartmentAccountList.OnFragmentInteractionListener {
+public class Activity_DepartmentAccount extends FragmentActivity implements
+        Fragment_DepartmentAccountList.OnFragmentInteractionListener {
 
+    Context mContext;
+    private LoadingDialog dialog;
+    TextView title_text;
+    ImageButton imageButton_Back;
     FragmentManager fragmentManager;
     Fragment_DepartmentAccountList fragment_departmentAccountList;
-    Fragment_DepartmentUserAccountList fragment_departmentUserAccountList;
 
     private boolean isIndexView;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String method = data.getString("method");
+            if (dialog.isShowing()) {
+                dialog.hide();
+            }
+            if (method.equals("con_failed")) {
+                String result = data.getString("result");
+                if (result == null) {
+                    result = "网络连接失败";
+                }
+                Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (method.equals("department_list")) {
+                List<Department> rows = data.getParcelableArrayList("rows");
+                int total = 0;
+                fragment_departmentAccountList.setViewData(rows);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +76,9 @@ public class Activity_DepartmentAccount extends FragmentActivity implements Frag
     }
 
     private void initWidget() {
+        dialog = new LoadingDialog(this);
+        title_text = (TextView) findViewById(R.id.title_text);
+        imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
         fragment_departmentAccountList = new Fragment_DepartmentAccountList();
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -45,23 +87,28 @@ public class Activity_DepartmentAccount extends FragmentActivity implements Frag
     }
 
     private void initData() {
+        mContext = this;
+        title_text.setText("网店余额");
     }
 
     private void initEvent() {
+        imageButton_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onTitleBackButtonClick();
+            }
+        });
     }
-
     private void onTitleBackButtonClick() {
+        dialog.dismiss();
         Activity_DepartmentAccount.this.setResult(RESULT_OK);
         Activity_DepartmentAccount.this.finish();
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            onTitleBackButtonClick();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        onTitleBackButtonClick();
+        // super.onBackPressed();
+        System.out.println("按下了back键   onBackPressed()");
     }
 
     @Override
@@ -78,6 +125,9 @@ public class Activity_DepartmentAccount extends FragmentActivity implements Frag
     }
 
     @Override
-    public void OnFragment_DepartmentAccountLIst_ListItemClick(int departmentId) {
+    public void OnFragment_GetDepartmentAccountLIst() {
+        Con_DepartmentAccount con_departmentAccount = new Con_DepartmentAccount(handler);
+        dialog.show();
+        con_departmentAccount.getDepartmentAccountList();
     }
 }

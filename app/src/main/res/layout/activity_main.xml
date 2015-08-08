@@ -20,14 +20,14 @@
             android:textColor="@color/my_black_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView" />
+            android:id="@+id/tv_main_name" />
         <TextView
             android:text="金融业务局金融业务局"
             android:textSize="10sp"
             android:textColor="@color/my_deepgray_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView1" />
+            android:id="@+id/tv_main_department" />
         <LinearLayout
             android:layout_marginTop="50dp"
             android:layout_gravity="right"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView">
             <TextView
-                android:text="当前积分"
+                android:text="当前日平均"
                 android:layout_gravity="right"
                 android:textColor="@color/my_deepgray_color"
                 android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                 android:textColor="@color/my_deepgray_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textScore" />
+                android:id="@+id/tv_main_average_money" />
         </LinearLayout>
         <LinearLayout
             android:layout_gravity="right"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView">
             <TextView
-                android:text="预计积分"
+                android:text="预期余额"
                 android:layout_gravity="right"
                 android:textColor="@color/my_deepgray_color"
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:textColor="@color/my_deepgray_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/comeScore" />
+                android:id="@+id/tv_main_expect_money" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView">
                 <TextView
-                    android:text="日均余额"
+                    android:text="还需存入"
                     android:layout_gravity="right"
                     android:textColor="@color/my_deepgray_color"
                     android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                     android:textColor="@color/my_deepgray_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/money" />
+                    android:id="@+id/tv_main_need_money" />
         </LinearLayout>
 
 

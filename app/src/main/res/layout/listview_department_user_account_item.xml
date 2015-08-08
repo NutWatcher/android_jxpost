@@ -16,12 +16,12 @@
 
         <TextView
             android:gravity="start"
-            android:id="@+id/lv_department_name"
+            android:id="@+id/lv_department_user_account_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
             android:textColor="@color/my_black_color"
-            android:text="中山路中山路储蓄所" />
+            android:text="中山" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,11 +42,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/my_deepgray_color"
-                android:text="当前余额：" />
+                android:text="当前日平均：" />
 
             <TextView
                 android:gravity="end"
-                android:id="@+id/lv_department_balance"
+                android:id="@+id/lv_department_user_account_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"

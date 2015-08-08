@@ -13,9 +13,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.model.Account;
 import com.model.User;
 import com.myapplication.Activity_AccountList;
 import com.myapplication.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +38,7 @@ import java.util.Map;
 public class Fragment_LoginSelect extends Fragment {
 
     ListView lv_fragment_login_userlist;
-    private List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    private List<Map<String, String>> dataList = new ArrayList<>();
     private SimpleAdapter adapter;
     TextView textView;
 
@@ -68,8 +73,7 @@ public class Fragment_LoginSelect extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_loginselect, null);
-        return view;
+        return inflater.inflate(R.layout.fragment_loginselect, null);
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -84,13 +88,6 @@ public class Fragment_LoginSelect extends Fragment {
     }
 
     private void initData() {
-        for (int i = 0; i < 0; i++) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("name", "战三");
-            map.put("userId", "800004.56");
-            map.put("department", "54684984896849698498");
-            dataList.add(map);
-        }
         adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_userlist_item,
                 new String[]{"name", "userId", "department"}, new int[]{R.id.listname, R.id.listuserid, R.id.listdepartment});
         lv_fragment_login_userlist.setAdapter(adapter);
@@ -107,11 +104,33 @@ public class Fragment_LoginSelect extends Fragment {
         });
     }
 
+    public void setListData(JSONArray data) {
+        dataList.clear();
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject jsonObject = (JSONObject) data.opt(i);
+            User user = new User();
+            try {
+                user.setLogUserData(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                continue;
+            }
+            Map<String, String> map = new HashMap<>();
+            map.put("name", user.getName());
+            map.put("department", user.getDepartment());
+            map.put("userId", user.getUserId());
+            dataList.add(map);
+        }
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            // Log.i("loginselect", "adapter");
+        }
+    }
     public void setListData(List<User> data) {
         dataList.clear();
         // Log.i("loginselect", String.valueOf(dataList.size()));
         for (int i = 0; i < data.size(); i++) {
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<>();
             map.put("name", data.get(i).getName());
             map.put("department", data.get(i).getDepartment());
             map.put("userId", data.get(i).getUserId());
@@ -150,7 +169,7 @@ public class Fragment_LoginSelect extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentUserSelect(int userId);
+        void onFragmentUserSelect(int userId);
     }
 
 }

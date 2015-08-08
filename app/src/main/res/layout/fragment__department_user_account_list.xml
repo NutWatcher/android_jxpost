@@ -5,131 +5,131 @@
     android:orientation="vertical"
     android:background="@color/my_gray_color"
     tools:context=".MainActivity">
-
-    <LinearLayout
-        android:padding="10dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@+id/textView">
-
-        <TextView
-            android:paddingTop="10dp"
-            android:text="日均余额(元)"
-            android:textSize="10sp"
-            android:textColor="@color/my_black_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/departmentInfo_money" />
-
-        <TextView
-            android:paddingTop="20dp"
-            android:text="65251898.55"
-            android:textSize="30sp"
-            android:textColor="@color/my_black_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
-
+    <!--
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:layout_below="@+id/textView">
 
             <TextView
-                android:text="中山路储蓄所"
+                android:paddingTop="10dp"
+                android:text="日均余额(元)"
                 android:textSize="10sp"
-                android:textColor="@color/my_deepgray_color"
+                android:textColor="@color/my_black_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/departmentInfo_name" />
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/departmentInfo_money" />
 
             <TextView
-                android:text="第6名"
-                android:textSize="10sp"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/my_deepgray_color"
+                android:paddingTop="20dp"
+                android:text="65251898.55"
+                android:textSize="30sp"
+                android:textColor="@color/my_black_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/departmentInfo_rank" />
+                android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@+id/textView">
+
+                <TextView
+                    android:text="中山路储蓄所"
+                    android:textSize="10sp"
+                    android:textColor="@color/my_deepgray_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departmentInfo_name" />
+
+                <TextView
+                    android:text="第6名"
+                    android:textSize="10sp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/my_deepgray_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departmentInfo_rank" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="right"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView">
+
+                <TextView
+                    android:text="当前余额总额"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="15646546500.55"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/departmentInfo_totleMoney" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="right"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView">
+
+                <TextView
+                    android:text="预计积分"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="100.55"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comeScore" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="right"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView">
+
+                <TextView
+                    android:text="日均余额"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="6546546.2"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/money1" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_gravity="right"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView">
-
-            <TextView
-                android:text="当前余额总额"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="15646546500.55"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/departmentInfo_totleMoney" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_gravity="right"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView">
-
-            <TextView
-                android:text="预计积分"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="100.55"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/comeScore" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_gravity="right"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView">
-
-            <TextView
-                android:text="日均余额"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="6546546.2"
-                android:layout_gravity="right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/money1" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
+    -->
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/account_userlistView"
+        android:id="@+id/lv_department_user_account_listView"
         android:layout_gravity="center" />
 
 </LinearLayout>

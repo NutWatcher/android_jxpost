@@ -28,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import com.model.User;
 import com.tool.LoadingDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -121,12 +122,18 @@ public class Activity_Login extends FragmentActivity implements
     }
 
     public void selectUserId(String result) {
-        Gson gson = new Gson();
-        List<User> userlist = gson.fromJson(result, new TypeToken<List<User>>() {
-        }.getType());
-        if (userlist.size() == 0) {
+        JSONArray rows;
+        rows = null;
+        try {
+            rows = new JSONArray(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, "网络连接失败", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (rows.length() == 0) {
             Toast.makeText(this, "该用户不存在！！", Toast.LENGTH_SHORT).show();
-        } else if (userlist.size() > 1) {
+        } else if (rows.length() > 1) {
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
                     R.anim.my_slide_in_right, R.anim.abc_fade_out);
             if (!fragment_loginSelect.isAdded()) {    // 先判断是否被add过
@@ -135,9 +142,16 @@ public class Activity_Login extends FragmentActivity implements
                 fragmentTransaction.hide(fragment_login).show(fragment_loginSelect).commit(); // 隐藏当前的fragment，显示下一个
             }
             isFragmentSelectShow = true;
-            fragment_loginSelect.setListData(userlist);
+            fragment_loginSelect.setListData(rows);
         } else {
-            this.userId = Integer.parseInt(userlist.get(0).getUserId());
+            JSONObject jsonObject = (JSONObject) rows.opt(0);
+            try {
+                this.userId = Integer.parseInt(jsonObject.getString("value"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "用户id不存在！！", Toast.LENGTH_SHORT).show();
+                return;
+            }
             checkPassword();
         }
     }
@@ -153,29 +167,27 @@ public class Activity_Login extends FragmentActivity implements
                 dialog.hide();
             }
             if (method.equals("con_failed")) {
-                Toast.makeText(mContext, "网络连接失败", Toast.LENGTH_SHORT).show();
+                String result = data.getString("result");
+                if (result == null) {
+                    result = "网络连接失败";
+                }
+                Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
                 return;
             }
             backFragment_Login();
             if (method.equals("userList")) {
                 selectUserId(data.getString("result"));
             } else if (method.equals("checkPassword")) {
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = new JSONObject(data.getString("result"));
-                    String result = jsonObject.getString("success");
-                    if (result.equals("ture")) {
-                        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-                        editor.putString("userId", String.valueOf(userId));
-                        editor.commit();
-                        Activity_Login.this.setResult(RESULT_OK);
-                        Activity_Login.this.finish();
-                    } else {
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (data.getBoolean("success")) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+                    editor.putString("userId", String.valueOf(userId));
+                    editor.commit();
+                    dialog.dismiss();
+                    Activity_Login.this.setResult(200);
+                    Activity_Login.this.finish();
+                } else {
+                    Toast.makeText(mContext, data.getString("message"), Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -205,6 +217,5 @@ public class Activity_Login extends FragmentActivity implements
 
     @Override
     public void onBackPressed() {
-        return;
     }
 }

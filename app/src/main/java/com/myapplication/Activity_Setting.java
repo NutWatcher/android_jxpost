@@ -85,18 +85,14 @@ public class Activity_Setting extends FragmentActivity implements
         if (isIndexView) {
             Activity_Setting.this.setResult(RESULT_OK);
             Activity_Setting.this.finish();
-        } else {
-            // switchContent();
         }
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            onTitleBackButtonClick();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    @Override
+    public void onBackPressed() {
+        onTitleBackButtonClick();
+        // super.onBackPressed();
+        System.out.println("按下了back键   onBackPressed()");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,8 +130,8 @@ public class Activity_Setting extends FragmentActivity implements
     /**
      * 获取软件版本号
      *
-     * @param context
-     * @return
+     *
+     *
      */
     private int getVersionCode(Context context) {
         int versionCode = 0;

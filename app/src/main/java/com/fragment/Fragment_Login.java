@@ -78,8 +78,7 @@ public class Fragment_Login extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, null);
-        return view;
+        return inflater.inflate(R.layout.fragment_login, null);
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -92,9 +91,7 @@ public class Fragment_Login extends Fragment {
     private void initWidget() {
         btnSubmit = (Button) getActivity().findViewById(R.id.btn_loginFragment_login);
         et_loginFragment_name = (EditText) getActivity().findViewById(R.id.et_loginFragment_name);
-        ;
         et_loginFragment_password = (EditText) getActivity().findViewById(R.id.et_loginFragment_password);
-        ;
     }
 
     private void initData() {
@@ -150,7 +147,7 @@ public class Fragment_Login extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onSubmit(Bundle bundle);
+        void onSubmit(Bundle bundle);
     }
 
 }

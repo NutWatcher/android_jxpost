@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.model.Account;
 import com.myapplication.R;
 
 /**
@@ -20,6 +25,14 @@ import com.myapplication.R;
  * create an instance of this fragment.
  */
 public class Fragment_AccountInfo extends Fragment {
+
+    TextView tv_account_info_listname;
+    TextView tv_account_info_listmoney;
+    TextView tv_account_info_account;
+    TextView tv_account_info_opentime;
+    TextView tv_account_info_type;
+    boolean init = false;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -62,10 +75,42 @@ public class Fragment_AccountInfo extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account_info, null);
-        return view;
+        return inflater.inflate(R.layout.fragment_account_info, null);
     }
 
+    public void onActivityCreated(Bundle savedInstanceState) {
+        initWidget();
+        initData();
+        initEvent();
+        init = true;
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    public void setData(Account account) {
+        if (tv_account_info_listname == null) {
+            return;
+        }
+        Log.i("f_account_info", account.getCustomerName());
+        tv_account_info_listname.setText(account.getCustomerName());
+        tv_account_info_listmoney.setText(account.getBalance());
+        tv_account_info_account.setText(account.getExtUserId());
+        tv_account_info_opentime.setText(account.getOpenDt());
+        tv_account_info_type.setText(account.getType());
+    }
+
+    private void initWidget() {
+        tv_account_info_listname = (TextView) getActivity().findViewById(R.id.tv_account_info_listname);
+        tv_account_info_listmoney = (TextView) getActivity().findViewById(R.id.tv_account_info_listmoney);
+        tv_account_info_account = (TextView) getActivity().findViewById(R.id.tv_account_info_account);
+        tv_account_info_opentime = (TextView) getActivity().findViewById(R.id.tv_account_info_opentime);
+        tv_account_info_type = (TextView) getActivity().findViewById(R.id.tv_account_info_type);
+    }
+
+    private void initData() {
+    }
+
+    private void initEvent() {
+    }
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -100,7 +145,7 @@ public class Fragment_AccountInfo extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
 }

@@ -3,6 +3,8 @@ package com.fragment;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.model.Department;
+import com.model.User;
 import com.myapplication.Activity_AccountList;
 import com.myapplication.R;
 
@@ -31,7 +35,7 @@ import java.util.Map;
  */
 public class Fragment_DepartmentAccountList extends Fragment {
 
-    private List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
+    private List<Map<String, String>> dataList = new ArrayList<>();
     private SimpleAdapter adapter;
     private ListView listView;
     TextView textView;
@@ -66,6 +70,19 @@ public class Fragment_DepartmentAccountList extends Fragment {
         // Required empty public constructor
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String method = data.getString("method");
+            if (method.equals("notifyDataSetInvalidated")) {
+                if (adapter != null) {
+                    adapter.notifyDataSetInvalidated();
+                }
+            }
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,15 +114,9 @@ public class Fragment_DepartmentAccountList extends Fragment {
     }
 
     private void initData() {
-        for (int i = 0; i < 10; i++) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("name", "了空间按实得分离开家储蓄所");
-            map.put("money", "800555004.56");
-            map.put("rank", String.valueOf(55 + i));
-            dataList.add(map);
-        }
+        mListener.OnFragment_GetDepartmentAccountLIst();
         adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_departmentaccount_item,
-                new String[]{"name", "money", "rank"}, new int[]{R.id.departmenmtaccount_listdepartmentname, R.id.departmenmtaccount_listmoney, R.id.departmenmtaccount_listrank});
+                new String[]{"name", "balance"}, new int[]{R.id.lv_department_name, R.id.lv_department_balance});
         listView.setAdapter(adapter);
     }
 
@@ -122,6 +133,26 @@ public class Fragment_DepartmentAccountList extends Fragment {
         });
     }
 
+    public void setViewData(final List<Department> data) {
+        class checkLoginThread extends Thread {
+            @Override
+            public void run() {
+                for (int i = 0; i < data.size(); i++) {
+                    Department department = data.get(i);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", department.getBranchName());
+                    map.put("balance", department.getBalance());
+                    dataList.add(map);
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putString("method", "notifyDataSetInvalidated");
+                msg.setData(data);
+                handler.sendMessage(msg);
+            }
+        }
+        new checkLoginThread().start();
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -150,7 +181,7 @@ public class Fragment_DepartmentAccountList extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void OnFragment_DepartmentAccountLIst_ListItemClick(int departmentId);
+        void OnFragment_GetDepartmentAccountLIst();
     }
 
 }
