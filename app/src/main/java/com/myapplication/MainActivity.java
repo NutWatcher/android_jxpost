@@ -116,6 +116,9 @@ public class MainActivity extends Activity {
     }
 
     private void initUserInfo() {
+        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        userId = Integer.parseInt(sharedPreferences.getString("userId", "0"));
         Con_User con_user = new Con_User(handler);
         con_user.getUserinfo(userId);
     }

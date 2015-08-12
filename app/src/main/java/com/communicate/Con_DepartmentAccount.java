@@ -50,12 +50,13 @@ public class Con_DepartmentAccount extends Con_Base {
         handler.sendMessage(msg);
     }
 
-    public void getDepartmentUserAccountList() {
+    public void getDepartmentUserAccountList(final int departmentId) {
         class downloadApkThread extends Thread {
             @Override
             public void run() {
                 try {
                     params = new HashMap<>();
+                    params.put("departmentId", String.valueOf(departmentId));
                     initCon_Post(URL_DEPARTMENT_USER_ACCOUNT);
                     SetParams(params);
                     result = getDate();

@@ -87,6 +87,7 @@ public class Con_Login extends Con_Base {
                     jsonObject = new JSONObject(result);
                     boolean success = jsonObject.getBoolean("success");
                     String message = jsonObject.getString("message");
+                    data.putString("departmentId", jsonObject.getString("departmentId"));
                     data.putBoolean("success", success);
                     data.putString("message", message);
                     data.putString("method", "checkPassword");

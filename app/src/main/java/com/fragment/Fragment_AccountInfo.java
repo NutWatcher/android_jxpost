@@ -32,6 +32,7 @@ public class Fragment_AccountInfo extends Fragment {
     TextView tv_account_info_opentime;
     TextView tv_account_info_type;
     boolean init = false;
+    Account account ;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,6 +83,9 @@ public class Fragment_AccountInfo extends Fragment {
         initWidget();
         initData();
         initEvent();
+        if (account != null) {
+            setData(account);
+        }
         init = true;
         super.onActivityCreated(savedInstanceState);
     }
@@ -90,6 +94,7 @@ public class Fragment_AccountInfo extends Fragment {
         if (tv_account_info_listname == null) {
             return;
         }
+        this.account = account ;
         Log.i("f_account_info", account.getCustomerName());
         tv_account_info_listname.setText(account.getCustomerName());
         tv_account_info_listmoney.setText(account.getBalance());

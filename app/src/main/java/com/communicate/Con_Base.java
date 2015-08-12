@@ -25,7 +25,9 @@ public class Con_Base extends Thread {
     private String con_url;
 
     //private static final String CON_URL = "http://10.140.0.42:8080/HuResources";
-    private static final String CON_URL = "http://192.168.1.101:3000";
+    //private static final String CON_URL = "http://192.168.1.101:3000";
+    private static final String CON_URL = "http://10.140.25.126:8080/HuResources";
+
 
     Con_Base() {
         setCon_url(CON_URL);
@@ -57,8 +59,13 @@ public class Con_Base extends Thread {
     public void SetParams(Map<String, String> params) throws IOException {
             String content = "";
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            int flag = 0 ;
             for (String key : params.keySet()) {
+                if (flag == 1){
+                    content += "&";
+                }
                 content += URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8");
+                flag = 1 ;
                 Log.i("Map", "Key = " + key + ", Value = " + params.get(key));
             }
             dos.writeBytes(content);

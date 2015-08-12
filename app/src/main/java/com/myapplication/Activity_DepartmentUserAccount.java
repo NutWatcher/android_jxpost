@@ -1,6 +1,7 @@
 package com.myapplication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -137,8 +138,12 @@ public class Activity_DepartmentUserAccount extends FragmentActivity implements
 
     @Override
     public void onFragmentGetUserInfoList() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
+        int departmentId = Integer.parseInt(sharedPreferences.getString("departmentId", "0"));
         Con_DepartmentAccount con_departmentAccount = new Con_DepartmentAccount(handler);
         dialog.show();
-        con_departmentAccount.getDepartmentUserAccountList();
+        con_departmentAccount.getDepartmentUserAccountList(departmentId);
     }
 }

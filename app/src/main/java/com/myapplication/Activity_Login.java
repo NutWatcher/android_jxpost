@@ -22,9 +22,6 @@ import com.fragment.Fragment_AccountList;
 import com.fragment.Fragment_AccountSearch;
 import com.fragment.Fragment_Login;
 import com.fragment.Fragment_LoginSelect;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.model.User;
 import com.tool.LoadingDialog;
 
@@ -46,6 +43,7 @@ public class Activity_Login extends FragmentActivity implements
     private LoadingDialog dialog;
     private boolean isFragmentSelectShow;
     private int userId;
+    private int departmentId ;
     private String password;
     private boolean isIndexView;
     FragmentManager fragmentManager;
@@ -147,6 +145,7 @@ public class Activity_Login extends FragmentActivity implements
             JSONObject jsonObject = (JSONObject) rows.opt(0);
             try {
                 this.userId = Integer.parseInt(jsonObject.getString("value"));
+                //this.departmentId = Integer.parseInt(jsonObject.getString("departmentId"));
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "用户id不存在！！", Toast.LENGTH_SHORT).show();
@@ -182,6 +181,7 @@ public class Activity_Login extends FragmentActivity implements
                     SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
                     editor.putString("userId", String.valueOf(userId));
+                    editor.putString("departmentId", data.getString("departmentId"));
                     editor.commit();
                     dialog.dismiss();
                     Activity_Login.this.setResult(200);
@@ -206,6 +206,7 @@ public class Activity_Login extends FragmentActivity implements
     @Override
     public void onFragmentUserSelect(int userId) {
         this.userId = userId;
+       // this.departmentId = departmentId;
         checkPassword();
     }
 
