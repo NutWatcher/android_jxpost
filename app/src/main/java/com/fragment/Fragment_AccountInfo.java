@@ -92,9 +92,9 @@ public class Fragment_AccountInfo extends Fragment {
 
     public void setData(Account account) {
         if (tv_account_info_listname == null) {
+            this.account = account;
             return;
         }
-        this.account = account ;
         Log.i("f_account_info", account.getCustomerName());
         tv_account_info_listname.setText(account.getCustomerName());
         tv_account_info_listmoney.setText(account.getBalance());

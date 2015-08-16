@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.adapter.Adapter_GradView;
 import com.communicate.Con_User;
 import com.model.User;
+import com.tool.IndexDialog;
 import com.tool.LoadingDialog;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ public class MainActivity extends Activity {
 
     private Context mContext;
     private LoadingDialog dialog;
+    private IndexDialog indexDialog;
     private int userId = 0;
     private GridView gridView;
     private TextView tv_main_name;
@@ -88,6 +90,7 @@ public class MainActivity extends Activity {
                     } else {
                         Log.i("main", "get_userInfo");
                         initUserInfo();
+                        indexDialog.show();
                     }
                     break;
                 case "userInfo":
@@ -103,6 +106,7 @@ public class MainActivity extends Activity {
     };
     private void initWidget() {
         dialog = new LoadingDialog(this);
+        indexDialog = new IndexDialog(this);
         tv_main_name = (TextView) findViewById(R.id.tv_main_name);
         tv_main_department = (TextView) findViewById(R.id.tv_main_department);
         tv_main_average_money = (TextView) findViewById(R.id.tv_main_average_money);
@@ -112,6 +116,7 @@ public class MainActivity extends Activity {
     }
     private  void initData(){
         mContext = this;
+
         gridView.setAdapter(new Adapter_GradView(titles, images, this));
     }
 
