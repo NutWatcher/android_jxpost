@@ -33,7 +33,7 @@ public class Activity_Setting extends FragmentActivity implements
     private TextView tv_title;
 
     ImageButton imageButton_Back;
-    ImageButton imageButton_Search;
+    ImageButton imageButton_Setting;
 
     Fragment_Setting fragment_setting;
     Fragment_About fragment_about;
@@ -63,13 +63,13 @@ public class Activity_Setting extends FragmentActivity implements
         fragmentTransaction.add(R.id.frame, fragment_setting);
         fragmentTransaction.commit();
         imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
-        imageButton_Search = (ImageButton) findViewById(R.id.title_imageButton_search);
+        imageButton_Setting = (ImageButton) findViewById(R.id.title_imageButton_setting);
     }
 
     private void initData() {
         isIndexView = true;
         tv_title.setText("设置");
-        imageButton_Search.setVisibility(View.GONE);
+        imageButton_Setting.setVisibility(View.INVISIBLE);
     }
 
     private void initEvent() {

@@ -44,7 +44,7 @@
         android:layout_height="50dp"
         android:text="@string/btn_loginFragment_login_title"
         android:textSize="20sp"
-        android:background="@color/my_orange_color"
+        android:background="@drawable/my_button_radius"
         android:textColor="@color/my_white_color"
         android:layout_below="@+id/et_loginFragment_password"
         android:layout_centerHorizontal="true" />

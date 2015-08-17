@@ -11,11 +11,14 @@ import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -48,12 +51,14 @@ import java.util.Map;
  */
 public class Fragment_AccountList extends Fragment {
 
-
+    static private int limit = 20;
+    private int total = 0;
     private List<Map<String, Object>> dataList = new ArrayList<>();
     private List<Account> dataList_account = new ArrayList<>();
     private SimpleAdapter adapter ;
     private ListView listView ;
     TextView textView ;
+    LinearLayout loadingLayout;
     int userId;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -128,7 +133,8 @@ public class Fragment_AccountList extends Fragment {
     public void onGetSearchData(Map<String, String> params) {
     }
 
-    public void setViewData(final List<Account> data) {
+    public void setViewData(final List<Account> data, int total) {
+        this.total = total;
         class checkLoginThread extends Thread {
             @Override
             public void run() {
@@ -157,7 +163,7 @@ public class Fragment_AccountList extends Fragment {
 
     }
     private  void initData(){
-        mListener.onFragmentAccountGetData(0, 10);
+        mListener.onFragmentAccountGetData(0, limit);
         adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_accountlist_item,
                 new String[]{"name","money","account"}, new int[]{R.id.listname, R.id.listmoney, R.id.account});
         listView.setAdapter(adapter);
@@ -174,6 +180,30 @@ public class Fragment_AccountList extends Fragment {
                 //((Activity_AccountList) getActivity()).switchContent();
                 //setContentView(R.layout.activity_account_info);
                 //isIndexView = false;
+            }
+        });
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            //AbsListView view 这个view对象就是listview
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                        // loadData();
+                        //  Log.i("fragment_accountlist","getLastVisiblePosition= "+view.getLastVisiblePosition());
+                        //  Log.i("fragment_accountlist","total= "+ total);
+                        if (total <= view.getCount()) {
+                            return;
+                        } else {
+                            mListener.onFragmentAccountGetData(view.getCount(), limit);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                //lastItem = firstVisibleItem + visibleItemCount - 1 ;
             }
         });
     }

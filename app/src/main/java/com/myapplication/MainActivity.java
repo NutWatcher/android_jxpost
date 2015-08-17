@@ -1,12 +1,24 @@
 package com.myapplication;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,17 +33,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adapter.Adapter_GradView;
+import com.communicate.Con_Account;
 import com.communicate.Con_User;
+import com.db.DB_Account;
+import com.model.Account;
 import com.model.User;
+import com.service.AccountService;
 import com.tool.IndexDialog;
 import com.tool.LoadingDialog;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends Activity {
 
+    private Intent Intent_AccountService;
     private Context mContext;
     private LoadingDialog dialog;
     private IndexDialog indexDialog;
@@ -42,6 +61,12 @@ public class MainActivity extends Activity {
     private TextView tv_main_average_money;
     private TextView tv_main_expect_money;
     private TextView tv_main_need_money;
+    private MsgReceiver msgReceiver;
+    private NotificationManager mNotifyMgr;
+    // 声明Notification（通知）对象
+    private Notification notification;
+    // 消息的唯一标示id
+    public int mNotificationId = 001;
 
     private String[] titles = new String[]
             {"个人协储", "部门信息", "网点余额", "设置", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
@@ -61,7 +86,7 @@ public class MainActivity extends Activity {
         initData();
         initEvent();
         checkLogin();
-
+        setClock();
     }
 
     private Handler handler = new Handler() {
@@ -101,6 +126,10 @@ public class MainActivity extends Activity {
                     tv_main_expect_money.setText(user.getExpectScoer());
                     tv_main_need_money.setText(user.getMoney());
                     break;
+                case "user_clear_account":
+                    saveClearAccount(data);
+                    startAppInfo();
+                    break;
             }
         }
     };
@@ -113,19 +142,30 @@ public class MainActivity extends Activity {
         tv_main_expect_money = (TextView) findViewById(R.id.tv_main_expect_money);
         tv_main_need_money = (TextView) findViewById(R.id.tv_main_need_money);
         gridView = (GridView)findViewById(R.id.gridView);
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("ELITOR_CLOCK");
+        registerReceiver(msgReceiver, intentFilter);
     }
     private  void initData(){
         mContext = this;
-
         gridView.setAdapter(new Adapter_GradView(titles, images, this));
     }
-
     private void initUserInfo() {
         SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
         userId = Integer.parseInt(sharedPreferences.getString("userId", "0"));
         Con_User con_user = new Con_User(handler);
         con_user.getUserinfo(userId);
+    }
+
+    private void setClock() {
+        Intent intent = new Intent("ELITOR_CLOCK");
+        intent.putExtra("msg", "你该打酱油了");
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 10000, pi);
+        getClearAccount();
     }
     private void checkLogin() {
         class checkLoginThread extends Thread {
@@ -154,9 +194,11 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (id == 0) {
                     Intent intent = new Intent(MainActivity.this, Activity_AccountList.class);
+                    intent.putExtra("fragment", "1");
                     startActivityForResult(intent, 1);
                 } else if (id == 1) {
                     Intent intent = new Intent(MainActivity.this, Activity_DepartmentUserAccount.class);
+
                     startActivityForResult(intent, 1);
                 } else if (id == 2) {
                     Intent intent = new Intent(MainActivity.this, Activity_DepartmentAccount.class);
@@ -170,18 +212,13 @@ public class MainActivity extends Activity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
         return super.onOptionsItemSelected(item);
     }
 
@@ -192,5 +229,72 @@ public class MainActivity extends Activity {
         } else {
             checkLogin();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(Intent_AccountService);
+        super.onDestroy();
+    }
+
+    private void saveClearAccount(Bundle data) {
+        DB_Account dbHelper = new DB_Account(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cValue = new ContentValues();
+        List<Account> rows = data.getParcelableArrayList("rows");
+        for (int i = 0; i < rows.size(); i++) {
+            cValue = new ContentValues();
+            Account account = rows.get(i);
+            Map<String, Object> map = new HashMap<>();
+            cValue.put("extUserId", account.getExtUserId());
+            cValue.put("customerName", account.getCustomerName());
+            cValue.put("balance", account.getBalance());
+            db.insert("Clear_Account", null, cValue);
+        }
+    }
+
+    private void startAppInfo() {
+
+
+        Intent resultIntent = new Intent(MainActivity.this,
+                Activity_AccountList.class);
+        resultIntent.putExtra("fragment", "ClearAccount");
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                MainActivity.this, 0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this);
+        builder.setAutoCancel(true)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.post_logo)
+                .setTicker("嘉兴邮政提示!")
+                .setContentTitle("嘉兴邮政提示")
+                .setContentText("您最近有账户销户！！")
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setContentIntent(resultPendingIntent).build();
+        notification = builder.build();
+        mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(mNotificationId++, notification);
+    }
+
+    private void getClearAccount() {
+        if (userId == 0) {
+            setClock();
+            return;
+        }
+        Log.i("main_activty", "getClearAccount");
+        Con_Account con_account = new Con_Account(handler);
+        con_account.getClearAccountList(userId);
+    }
+
+    public class MsgReceiver extends BroadcastReceiver {
+        private int i = 0;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //拿到进度，更新UI
+            Log.i("broadcast", "come!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            getClearAccount();
+        }
+
     }
 }

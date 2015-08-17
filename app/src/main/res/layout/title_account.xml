@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/my_black_color"
+    android:background="@drawable/my_title"
     android:orientation="horizontal">
 
     <ImageButton
@@ -11,20 +11,21 @@
         android:scaleType="fitXY"
         android:layout_width="50dp"
         android:layout_height="match_parent"
+        android:background="@drawable/my_title"
         android:src="@drawable/back_button"
-        android:background="@color/my_black_color"
         android:id="@+id/title_imageButton_back" />
     <TextView
         android:id="@+id/title_text"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textSize="20sp"
-        android:gravity="center_vertical"
-        android:textColor="@color/my_white_color"
+        android:gravity="center"
+        android:textColor="@color/my_deepgray_color"
         android:text="这里是标题" />
     <LinearLayout
         android:gravity="center_vertical|end"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <ImageButton
             android:contentDescription="@string/app_name"
@@ -32,8 +33,8 @@
             android:scaleType="fitXY"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/search_button"
-            android:background="@color/my_black_color"
-            android:id="@+id/title_imageButton_search" />
+            android:src="@drawable/setting_button"
+            android:background="@drawable/my_title"
+            android:id="@+id/title_imageButton_setting" />
     </LinearLayout>
 </LinearLayout>

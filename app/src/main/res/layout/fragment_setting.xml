@@ -100,7 +100,7 @@
             android:text="退出登录"
             android:id="@+id/tv_logout"
             android:textSize="20sp"
-            android:background="@color/my_orange_color"
+            android:background="@drawable/my_button_radius"
             android:textColor="@color/my_white_color"
             android:layout_centerHorizontal="true" />
 

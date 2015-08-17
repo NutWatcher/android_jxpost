@@ -1,6 +1,7 @@
 package com.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,7 +23,7 @@ import android.widget.Toast;
 import com.communicate.Con_Account;
 import com.fragment.Fragment_AccountInfo;
 import com.fragment.Fragment_AccountList;
-import com.fragment.Fragment_AccountSearch;
+import com.fragment.Fragment_AccountSetting;
 import com.model.Account;
 import com.tool.LoadingDialog;
 
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +40,7 @@ public class Activity_AccountList extends FragmentActivity
         implements
         Fragment_AccountList.OnFragmentInteractionListener,
         Fragment_AccountInfo.OnFragmentInteractionListener,
-        Fragment_AccountSearch.OnFragmentInteractionListener {
+        Fragment_AccountSetting.OnFragmentInteractionListener {
 
     private Context mContext;
     private int userId;
@@ -45,12 +48,14 @@ public class Activity_AccountList extends FragmentActivity
     private LoadingDialog dialog;
     TextView title_text;
     ImageButton imageButton_Back ;
-    ImageButton imageButton_Search ;
+    ImageButton imageButton_Setting;
     FragmentManager fragmentManager ;
     Fragment_AccountList fragment_accountList ;
     Fragment_AccountInfo fragment_accountInfo ;
-    Fragment_AccountSearch fragment_accountSearch;
+    Fragment_AccountSetting fragment_accountSetting;
     Con_Account con_account;
+
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -71,18 +76,24 @@ public class Activity_AccountList extends FragmentActivity
             }
             if (method.equals("user_account")) {
                 List<Account> rows = data.getParcelableArrayList("rows");
-                int total = 0;
-                fragment_accountList.setViewData(rows);
+                int total = data.getInt("total");
+                fragment_accountList.setViewData(rows, total);
             }
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_account_list);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_account);
+
+        Intent intent = getIntent();
+        String value = intent.getStringExtra("fragment");
+        Log.i("Activity_Account", "value++++++++++++++" + value);
+
         initWidget();
         initData();
         initEvent();
@@ -92,14 +103,14 @@ public class Activity_AccountList extends FragmentActivity
         dialog = new LoadingDialog(this);
         fragment_accountInfo = new Fragment_AccountInfo();
         fragment_accountList = new Fragment_AccountList();
-        fragment_accountSearch = new Fragment_AccountSearch();
+        fragment_accountSetting = new Fragment_AccountSetting();
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frame, fragment_accountList);
         fragmentTransaction.commit();
         title_text = (TextView) findViewById(R.id.title_text);
         imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
-        imageButton_Search = (ImageButton) findViewById(R.id.title_imageButton_search);
+        imageButton_Setting = (ImageButton) findViewById(R.id.title_imageButton_setting);
     }
     private  void initData(){
         mContext = this;
@@ -123,7 +134,7 @@ public class Activity_AccountList extends FragmentActivity
                 onTitleBackButtonClick();
             }
         });
-        imageButton_Search.setOnClickListener(new View.OnClickListener() {
+        imageButton_Setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onTitleSearchButtonClick();
@@ -132,12 +143,12 @@ public class Activity_AccountList extends FragmentActivity
     }
     public void switchContent() {
         if (isIndexView) {
-            //imageButton_Search.setVisibility(View.GONE);
+            //imageButton_Setting.setVisibility(View.GONE);
             isIndexView = !isIndexView ;
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
                     R.anim.my_slide_in_right, R.anim.abc_fade_out);
-            if (fragment_accountSearch.isAdded()) {    // 先判断是否被add过
-                fragmentTransaction.remove(fragment_accountSearch); // 隐藏当前的fragment，显示下一个
+            if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
+                fragmentTransaction.remove(fragment_accountSetting); // 隐藏当前的fragment，显示下一个
             }
             if (!fragment_accountInfo.isAdded()) {    // 先判断是否被add过
                 fragmentTransaction.hide(fragment_accountList).add(R.id.frame, fragment_accountInfo).commit(); // 隐藏当前的fragment，add下一个到Activity中
@@ -146,7 +157,7 @@ public class Activity_AccountList extends FragmentActivity
             }
         }
         else {
-            //imageButton_Search.setVisibility(View.VISIBLE);
+            //imageButton_Setting.setVisibility(View.VISIBLE);
             isIndexView = !isIndexView ;
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
                     android.R.anim.fade_in, R.anim.my_slide_out_right);
@@ -159,9 +170,9 @@ public class Activity_AccountList extends FragmentActivity
         }
     }
     private void onTitleBackButtonClick(){
-        if (fragment_accountSearch.isAdded()) {    // 先判断是否被add过
+        if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(fragment_accountSearch).commit(); // 隐藏当前的fragment，显示下一个
+            fragmentTransaction.remove(fragment_accountSetting).commit(); // 隐藏当前的fragment，显示下一个
         } else if (isIndexView) {
             Activity_AccountList.this.setResult(RESULT_OK);
             Activity_AccountList.this.finish();
@@ -172,12 +183,13 @@ public class Activity_AccountList extends FragmentActivity
     }
 
     private void onTitleSearchButtonClick() {
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (!fragment_accountSearch.isAdded()) {    // 先判断是否被add过
-            fragmentTransaction.add(R.id.frame_search, fragment_accountSearch).commit();
+        openOptionsMenu();
+        /*android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (!fragment_accountSetting.isAdded()) {    // 先判断是否被add过
+            fragmentTransaction.add(R.id.frame_search, fragment_accountSetting).commit();
         } else {
-            fragmentTransaction.remove(fragment_accountSearch).commit(); // 隐藏当前的fragment，显示下一个
-        }
+            fragmentTransaction.remove(fragment_accountSetting).commit(); // 隐藏当前的fragment，显示下一个
+        }*/
     }
 
     @Override
@@ -193,12 +205,14 @@ public class Activity_AccountList extends FragmentActivity
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Log.i("acticity_account", "menu");
 
         //noinspection SimplifiableIfStatement
 
@@ -209,13 +223,13 @@ public class Activity_AccountList extends FragmentActivity
     public void onFragmentInteraction(Uri uri) {
     }
 
-    @Override
+  /*  @Override
     public void onFragmentSearchInteraction(Map<String, String> params) {
         onTitleSearchButtonClick();
         if (fragment_accountList != null) {
             fragment_accountList.onGetSearchData(params);
         }
-    }
+    }*/
 
     @Override
     public void onFragmentAccountGetData(int start, int limit) {
@@ -228,8 +242,8 @@ public class Activity_AccountList extends FragmentActivity
         isIndexView = false;
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
                 R.anim.my_slide_in_right, R.anim.abc_fade_out);
-      /*  if (fragment_accountSearch.isAdded()) {    // 先判断是否被add过
-            fragmentTransaction.remove(fragment_accountSearch); // 隐藏当前的fragment，显示下一个
+      /*  if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
+            fragmentTransaction.remove(fragment_accountSetting); // 隐藏当前的fragment，显示下一个
         }*/
         if (!fragment_accountInfo.isAdded()) {    // 先判断是否被add过
             fragmentTransaction.hide(fragment_accountList).add(R.id.frame, fragment_accountInfo).commit(); // 隐藏当前的fragment，add下一个到Activity中
@@ -239,4 +253,5 @@ public class Activity_AccountList extends FragmentActivity
         title_text.setText("账户信息");
         fragment_accountInfo.setData(account);
     }
+
 }
