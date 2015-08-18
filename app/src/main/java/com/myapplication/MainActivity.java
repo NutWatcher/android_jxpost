@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         initData();
         initEvent();
         checkLogin();
-        //setClock();
+        setClock();
     }
 
     @Override
@@ -293,7 +293,7 @@ public class MainActivity extends Activity {
     }
     private void getClearAccount() {
         if (userId == 0) {
-            setClock();
+            //setClock();
             return;
         }
         Log.i("main_activty", "getClearAccount");

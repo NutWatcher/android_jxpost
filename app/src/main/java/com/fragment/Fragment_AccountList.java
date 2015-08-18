@@ -193,7 +193,7 @@ public class Fragment_AccountList extends Fragment {
                         //  Log.i("fragment_accountlist","getLastVisiblePosition= "+view.getLastVisiblePosition());
                         //  Log.i("fragment_accountlist","total= "+ total);
                         if (total <= view.getCount()) {
-                        } 
+                        }
                         else {
                             mListener.onFragmentAccountGetData(view.getCount(), limit);
                         }
