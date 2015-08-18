@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
     private Notification notification;
     // 消息的唯一标示id
     public int mNotificationId = 001;
+    private DB_Account dbHelper;
 
     private String[] titles = new String[]
             {"个人协储", "部门信息", "网点余额", "设置", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
@@ -87,6 +88,12 @@ public class MainActivity extends Activity {
         initEvent();
         checkLogin();
         setClock();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("main_actovoty", "onResume");
     }
 
     private Handler handler = new Handler() {
@@ -115,7 +122,7 @@ public class MainActivity extends Activity {
                     } else {
                         Log.i("main", "get_userInfo");
                         initUserInfo();
-                        indexDialog.show();
+                        // indexDialog.show();
                     }
                     break;
                 case "userInfo":
@@ -127,8 +134,12 @@ public class MainActivity extends Activity {
                     tv_main_need_money.setText(user.getMoney());
                     break;
                 case "user_clear_account":
-                    saveClearAccount(data);
-                    startAppInfo();
+                    int total = data.getInt("total");
+                    Log.i("main_acitivy", "total:" + total);
+                    if (total != 0) {
+                        saveClearAccount(data);
+                        startAppInfo();
+                    }
                     break;
             }
         }
@@ -146,6 +157,7 @@ public class MainActivity extends Activity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("ELITOR_CLOCK");
         registerReceiver(msgReceiver, intentFilter);
+        dbHelper = new DB_Account(this);
     }
     private  void initData(){
         mContext = this;
@@ -164,7 +176,7 @@ public class MainActivity extends Activity {
         intent.putExtra("msg", "你该打酱油了");
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 10000, pi);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 100000, pi);
         getClearAccount();
     }
     private void checkLogin() {
@@ -237,27 +249,31 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
-    private void saveClearAccount(Bundle data) {
-        DB_Account dbHelper = new DB_Account(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cValue = new ContentValues();
-        List<Account> rows = data.getParcelableArrayList("rows");
-        for (int i = 0; i < rows.size(); i++) {
-            cValue = new ContentValues();
-            Account account = rows.get(i);
-            Map<String, Object> map = new HashMap<>();
-            cValue.put("extUserId", account.getExtUserId());
-            cValue.put("customerName", account.getCustomerName());
-            cValue.put("balance", account.getBalance());
-            db.insert("Clear_Account", null, cValue);
+    private void saveClearAccount(final Bundle data) {
+        class saveClearAccountThread extends Thread {
+            @Override
+            public void run() {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues cValue = new ContentValues();
+                List<Account> rows = data.getParcelableArrayList("rows");
+                for (int i = 0; i < rows.size(); i++) {
+                    cValue = new ContentValues();
+                    Account account = rows.get(i);
+                    Map<String, Object> map = new HashMap<>();
+                    cValue.put("extUserId", account.getExtUserId());
+                    cValue.put("customerName", account.getCustomerName());
+                    cValue.put("balance", account.getBalance());
+                    db.insert("Clear_Account", null, cValue);
+                }
+                db.close();
+            }
         }
+        new saveClearAccountThread().start();
     }
 
     private void startAppInfo() {
 
-
-        Intent resultIntent = new Intent(MainActivity.this,
-                Activity_AccountList.class);
+        Intent resultIntent = new Intent(MainActivity.this, Activity_AccountList.class);
         resultIntent.putExtra("fragment", "ClearAccount");
         PendingIntent resultPendingIntent = PendingIntent.getActivity(
                 MainActivity.this, 0, resultIntent,

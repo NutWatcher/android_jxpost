@@ -133,13 +133,14 @@ public class Fragment_AccountList extends Fragment {
     public void onGetSearchData(Map<String, String> params) {
     }
 
-    public void setViewData(final List<Account> data, int total) {
+    public void setViewData(final Bundle data, int total) {
         this.total = total;
         class checkLoginThread extends Thread {
             @Override
             public void run() {
-                for (int i = 0; i < data.size(); i++) {
-                    Account account = data.get(i);
+                List<Account> rows = data.getParcelableArrayList("rows");
+                for (int i = 0; i < rows.size(); i++) {
+                    Account account = rows.get(i);
                     dataList_account.add(account);
                     Map<String, Object> map = new HashMap<>();
                     map.put("name", account.getCustomerName());

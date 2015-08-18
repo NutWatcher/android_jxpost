@@ -3,9 +3,12 @@ package com.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -21,9 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.communicate.Con_Account;
+import com.db.DB_Account;
+import com.fragment.Fragment_AccountClearList;
 import com.fragment.Fragment_AccountInfo;
 import com.fragment.Fragment_AccountList;
-import com.fragment.Fragment_AccountSetting;
 import com.model.Account;
 import com.tool.LoadingDialog;
 
@@ -40,19 +44,22 @@ public class Activity_AccountList extends FragmentActivity
         implements
         Fragment_AccountList.OnFragmentInteractionListener,
         Fragment_AccountInfo.OnFragmentInteractionListener,
-        Fragment_AccountSetting.OnFragmentInteractionListener {
+        Fragment_AccountClearList.OnFragmentInteractionListener {
 
     private Context mContext;
     private int userId;
+    private int whichFragmentShow = 0;
     private boolean isIndexView ;
     private LoadingDialog dialog;
+    private DB_Account dbHelper;
+
     TextView title_text;
     ImageButton imageButton_Back ;
     ImageButton imageButton_Setting;
     FragmentManager fragmentManager ;
     Fragment_AccountList fragment_accountList ;
     Fragment_AccountInfo fragment_accountInfo ;
-    Fragment_AccountSetting fragment_accountSetting;
+    Fragment_AccountClearList fragment_accountClearList;
     Con_Account con_account;
 
 
@@ -77,7 +84,7 @@ public class Activity_AccountList extends FragmentActivity
             if (method.equals("user_account")) {
                 List<Account> rows = data.getParcelableArrayList("rows");
                 int total = data.getInt("total");
-                fragment_accountList.setViewData(rows, total);
+                fragment_accountList.setViewData(data, total);
             }
         }
     };
@@ -103,7 +110,7 @@ public class Activity_AccountList extends FragmentActivity
         dialog = new LoadingDialog(this);
         fragment_accountInfo = new Fragment_AccountInfo();
         fragment_accountList = new Fragment_AccountList();
-        fragment_accountSetting = new Fragment_AccountSetting();
+        fragment_accountClearList = new Fragment_AccountClearList();
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frame, fragment_accountList);
@@ -111,6 +118,7 @@ public class Activity_AccountList extends FragmentActivity
         title_text = (TextView) findViewById(R.id.title_text);
         imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
         imageButton_Setting = (ImageButton) findViewById(R.id.title_imageButton_setting);
+        dbHelper = new DB_Account(this);
     }
     private  void initData(){
         mContext = this;
@@ -141,36 +149,33 @@ public class Activity_AccountList extends FragmentActivity
             }
         });
     }
-    public void switchContent() {
-        if (isIndexView) {
-            //imageButton_Setting.setVisibility(View.GONE);
-            isIndexView = !isIndexView ;
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
-                    R.anim.my_slide_in_right, R.anim.abc_fade_out);
-            if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
-                fragmentTransaction.remove(fragment_accountSetting); // 隐藏当前的fragment，显示下一个
-            }
-            if (!fragment_accountInfo.isAdded()) {    // 先判断是否被add过
-                fragmentTransaction.hide(fragment_accountList).add(R.id.frame, fragment_accountInfo).commit(); // 隐藏当前的fragment，add下一个到Activity中
-            } else {
-                fragmentTransaction.hide(fragment_accountList).show(fragment_accountInfo).commit(); // 隐藏当前的fragment，显示下一个
-            }
-        }
-        else {
-            //imageButton_Setting.setVisibility(View.VISIBLE);
-            isIndexView = !isIndexView ;
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
-                    android.R.anim.fade_in, R.anim.my_slide_out_right);
-            if (!fragment_accountList.isAdded()) {    // 先判断是否被add过
-                fragmentTransaction.hide(fragment_accountInfo).add(R.id.frame, fragment_accountList).commit(); // 隐藏当前的fragment，add下一个到Activity中
-            } else {
-                fragmentTransaction.hide(fragment_accountInfo).show(fragment_accountList).commit(); // 隐藏当前的fragment，显示下一个
-            }
-            title_text.setText("账户列表");
+
+    public void switchContent(Fragment hide, Fragment show) {
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
+                R.anim.my_slide_in_right, R.anim.abc_fade_out);
+        if (!show.isAdded()) {    // 先判断是否被add过
+            fragmentTransaction.hide(hide).add(R.id.frame, show).commit(); // 隐藏当前的fragment，add下一个到Activity中
+        } else {
+            fragmentTransaction.hide(hide).show(show).commit(); // 隐藏当前的fragment，显示下一个
         }
     }
-    private void onTitleBackButtonClick(){
-        if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
+    public void switchContent() {
+    }
+
+    private void onTitleBackButtonClick() {
+        if (whichFragmentShow == 0) {
+            Activity_AccountList.this.setResult(RESULT_OK);
+            Activity_AccountList.this.finish();
+        } else if (whichFragmentShow == 1) {
+            switchContent(fragment_accountInfo, fragment_accountList);
+            title_text.setText("账户列表");
+            whichFragmentShow = 0;
+        } else if (whichFragmentShow == 2) {
+            switchContent(fragment_accountClearList, fragment_accountList);
+            title_text.setText("账户列表");
+            whichFragmentShow = 0;
+        }
+        /*if (fragment_accountSetting.isAdded()) {    // 先判断是否被add过
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.remove(fragment_accountSetting).commit(); // 隐藏当前的fragment，显示下一个
         } else if (isIndexView) {
@@ -179,9 +184,20 @@ public class Activity_AccountList extends FragmentActivity
         }
         else{
             switchContent();
-        }
+        }*/
     }
 
+    private void onCLearAccountButtonClick() {
+        //if (fragment_accountClearList.is)
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (!fragment_accountClearList.isAdded()) {    // 先判断是否被add过
+            fragmentTransaction.hide(fragment_accountInfo).add(R.id.frame, fragment_accountClearList).commit(); //
+        } else {
+            fragmentTransaction.hide(fragment_accountInfo).show(fragment_accountClearList).commit();  // 隐藏当前的fragment，显示下一个
+        }
+        whichFragmentShow = 2;
+        title_text.setText("账户销户列表");
+    }
     private void onTitleSearchButtonClick() {
         openOptionsMenu();
         /*android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -195,7 +211,6 @@ public class Activity_AccountList extends FragmentActivity
     @Override
     public void onBackPressed() {
         onTitleBackButtonClick();
-        // super.onBackPressed();
         System.out.println("按下了back键   onBackPressed()");
     }
     @Override
@@ -208,19 +223,34 @@ public class Activity_AccountList extends FragmentActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         Log.i("acticity_account", "menu");
-
-        //noinspection SimplifiableIfStatement
-
+        onCLearAccountButtonClick();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+    }
+
+    @Override
+    public void onTableClearAccount_Clear() {
+        class DeleteClearAccountThread extends Thread {
+            @Override
+            public void run() {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                String sql = "delete from Clear_Account";
+                try {
+                    db.execSQL(sql);
+                } catch (SQLException e) {
+                    Log.i("err", "update failed");
+                    db.close();
+                }
+                db.close();
+            }
+        }
+        new DeleteClearAccountThread().start();
+        switchContent(fragment_accountClearList, fragment_accountList);
     }
 
   /*  @Override
@@ -250,6 +280,7 @@ public class Activity_AccountList extends FragmentActivity
         } else {
             fragmentTransaction.hide(fragment_accountList).show(fragment_accountInfo).commit(); // 隐藏当前的fragment，显示下一个
         }
+        whichFragmentShow = 1;
         title_text.setText("账户信息");
         fragment_accountInfo.setData(account);
     }
