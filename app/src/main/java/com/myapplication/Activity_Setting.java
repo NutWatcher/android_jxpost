@@ -1,10 +1,13 @@
 package com.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -15,11 +18,21 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.communicate.Con_Updata;
 import com.communicate.Con_UpdataXml;
 import com.fragment.Fragment_About;
 import com.fragment.Fragment_Setting;
+import com.model.Account;
+import com.tool.LoadingDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class Activity_Setting extends FragmentActivity implements
         Fragment_Setting.OnFragmentInteractionListener,
@@ -31,6 +44,7 @@ public class Activity_Setting extends FragmentActivity implements
     private TextView tv_new_version;
     private Context mContext;
     private TextView tv_title;
+    private LoadingDialog loadingDialog ;
 
     ImageButton imageButton_Back;
     ImageButton imageButton_Setting;
@@ -39,6 +53,28 @@ public class Activity_Setting extends FragmentActivity implements
     Fragment_About fragment_about;
     FragmentManager fragmentManager;
 
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String method = data.getString("method");
+            if (loadingDialog.isShowing()) {
+                loadingDialog.hide();
+            }
+            if (method.equals("con_failed")) {
+                String result = data.getString("result");
+                if (result == null) {
+                    result = "网络连接失败";
+                }
+                Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
+            }
+            else if (method.equals("app_version")) {
+                isUpdate(data);
+            }
+        }
+    };
     public Activity_Setting() {
         this.mContext = this;
     }
@@ -55,6 +91,7 @@ public class Activity_Setting extends FragmentActivity implements
     }
 
     private void initWidget() {
+        loadingDialog = new LoadingDialog(this);
         tv_title = (TextView) findViewById(R.id.title_text);
         fragment_setting = new Fragment_Setting();
         fragment_about = new Fragment_About();
@@ -113,18 +150,23 @@ public class Activity_Setting extends FragmentActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isUpdate() {
-        int versionCode = getVersionCode(mContext);
-        Con_UpdataXml con_updataXml = new Con_UpdataXml();
-        HashMap<String, String> mHashMap = con_updataXml.getXml();
-        if (null != mHashMap) {
-            int serviceCode = Integer.valueOf(mHashMap.get("version"));
-            // 版本判断
-            if (serviceCode > versionCode) {
-                return true;
+    private void isUpdate(final Bundle data) {
+        class checkVersionThread extends Thread {
+            @Override
+            public void run() {
+                Double new_version = data.getDouble("version");
+                String url = data.getString("url");
+                int versionCode = getVersionCode(mContext);
+
+                if (new_version > versionCode) {
+                    Uri uri = Uri.parse(url);
+                    Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                    it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+                    startActivity(it);
+                }
             }
         }
-        return false;
+        new checkVersionThread().start();
     }
 
     /**
@@ -158,5 +200,17 @@ public class Activity_Setting extends FragmentActivity implements
         editor.commit();
         Activity_Setting.this.setResult(RESULT_OK);
         Activity_Setting.this.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        loadingDialog.dismiss();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onNewVersion() {
+        loadingDialog.show();
+        Con_Updata con_updata = new Con_Updata(handler);
     }
 }

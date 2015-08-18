@@ -99,7 +99,7 @@ public class Fragment_AccountList extends Fragment {
             String method = data.getString("method");
             if (method.equals("notifyDataSetInvalidated")) {
                 if (adapter != null) {
-                    adapter.notifyDataSetInvalidated();
+                    adapter.notifyDataSetChanged();
                 }
             }
         }
@@ -135,7 +135,7 @@ public class Fragment_AccountList extends Fragment {
 
     public void setViewData(final Bundle data, int total) {
         this.total = total;
-        class checkLoginThread extends Thread {
+        class setViewDataThread extends Thread {
             @Override
             public void run() {
                 List<Account> rows = data.getParcelableArrayList("rows");
@@ -155,7 +155,7 @@ public class Fragment_AccountList extends Fragment {
                 handler.sendMessage(msg);
             }
         }
-        new checkLoginThread().start();
+        new setViewDataThread().start();
     }
     private void initWidget() {
         listView = (ListView) getActivity().findViewById(R.id.listView);
@@ -193,8 +193,8 @@ public class Fragment_AccountList extends Fragment {
                         //  Log.i("fragment_accountlist","getLastVisiblePosition= "+view.getLastVisiblePosition());
                         //  Log.i("fragment_accountlist","total= "+ total);
                         if (total <= view.getCount()) {
-                            return;
-                        } else {
+                        } 
+                        else {
                             mListener.onFragmentAccountGetData(view.getCount(), limit);
                         }
                     }

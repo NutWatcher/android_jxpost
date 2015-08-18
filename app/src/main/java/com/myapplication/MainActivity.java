@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
     // 声明Notification（通知）对象
     private Notification notification;
     // 消息的唯一标示id
-    public int mNotificationId = 001;
+    public int mNotificationId = 1;
     private DB_Account dbHelper;
 
     private String[] titles = new String[]
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         initData();
         initEvent();
         checkLogin();
-        setClock();
+        //setClock();
     }
 
     @Override
@@ -171,14 +171,6 @@ public class MainActivity extends Activity {
         con_user.getUserinfo(userId);
     }
 
-    private void setClock() {
-        Intent intent = new Intent("ELITOR_CLOCK");
-        intent.putExtra("msg", "你该打酱油了");
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 100000, pi);
-        getClearAccount();
-    }
     private void checkLogin() {
         class checkLoginThread extends Thread {
             @Override
@@ -254,7 +246,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                ContentValues cValue = new ContentValues();
+                ContentValues cValue;
                 List<Account> rows = data.getParcelableArrayList("rows");
                 for (int i = 0; i < rows.size(); i++) {
                     cValue = new ContentValues();
@@ -291,7 +283,14 @@ public class MainActivity extends Activity {
         mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId++, notification);
     }
-
+    private void setClock() {
+        Intent intent = new Intent("ELITOR_CLOCK");
+        intent.putExtra("msg", "你该打酱油了");
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5 * 100000, pi);
+        getClearAccount();
+    }
     private void getClearAccount() {
         if (userId == 0) {
             setClock();

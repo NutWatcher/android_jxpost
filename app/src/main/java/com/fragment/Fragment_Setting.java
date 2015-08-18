@@ -72,8 +72,7 @@ public class Fragment_Setting extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_setting, null);
-        return view;
+        return inflater.inflate(R.layout.fragment_setting, null);
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -100,6 +99,13 @@ public class Fragment_Setting extends Fragment {
             public void onClick(View v) {
                 Log.i("setting", "onClick");
                 mListener.onLogout();
+            }
+        });
+        tv_new_version.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("setting", "tv_new_version");
+                mListener.onNewVersion();
             }
         });
     }
@@ -133,6 +139,7 @@ public class Fragment_Setting extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void onLogout();
+        public void onNewVersion();
     }
 
 }

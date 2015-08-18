@@ -7,14 +7,12 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.model.Account;
-import com.tool.ParseXml;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,18 +21,17 @@ import java.util.List;
 import java.util.Map;
 
 
-public class Con_UpdataXml extends Con_Base{
+public class Con_Updata extends Con_Base{
     private Map<String, String> params;
     private String result;
     private Handler handler;
-    private static final String URL_USERACCOUNT = "/view/userIdMap_androidSingleMapOnPagingView";
-    private static final String URL_USERCLEARACCOUNT = "/view/userIdMap_androidExpirePush";
+    private static final String URL_USERACCOUNT = "/direct/param_androidSystemInfo";
 
-    private  HttpURLConnection conn ;
+    private HttpURLConnection conn ;
     private String resultData = "";
     private URL url = null;
 
-    public Con_UpdataXml(Handler handler) {
+    public Con_Updata(Handler handler) {
         this.handler = handler;
     }
 
@@ -54,9 +51,6 @@ public class Con_UpdataXml extends Con_Base{
             public void run() {
                 try {
                     params = new HashMap<>();
-                    params.put("id", String.valueOf(userId));
-                    params.put("start", String.valueOf(start));
-                    params.put("limit", String.valueOf(limit));
                     initCon_Post(URL_USERACCOUNT);
                     SetParams(params);
                     result = getDate();
@@ -66,23 +60,11 @@ public class Con_UpdataXml extends Con_Base{
                     e.printStackTrace();
                     return;
                 }
-                JSONArray rows;
-                int total;
-                List<Account> dataList_account = new ArrayList<>();
+                Double version;
+                String url = "";
                 try {
-                    rows = new JSONObject(result).getJSONArray("rows");
-                    total = new JSONObject(result).getInt("total");
-                    for (int i = 0; i < rows.length(); i++) {
-                        JSONObject jsonObject = (JSONObject) rows.opt(i);
-                        Account account = new Account();
-                        try {
-                            account.setData(jsonObject);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            continue;
-                        }
-                        dataList_account.add(account);
-                    }
+                    version = new JSONObject(result).getDouble("version");
+                    url = new JSONObject(result).getString("url");
                 } catch (JSONException e) {
                     result = "数据转换失败";
                     setFailed(result);
@@ -91,9 +73,10 @@ public class Con_UpdataXml extends Con_Base{
                 }
                 Message msg = new Message();
                 Bundle data = new Bundle();
-                data.putInt("total", total);
-                data.putParcelableArrayList("rows", (ArrayList<? extends Parcelable>) dataList_account);
-                data.putString("method", "user_account");
+                version = 0.1;
+                data.putDouble("version", version);
+                data.putString("url", url);
+                data.putString("method", "app_version");
                 msg.setData(data);
                 handler.sendMessage(msg);
             }
