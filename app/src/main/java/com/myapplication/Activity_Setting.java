@@ -179,7 +179,7 @@ public class Activity_Setting extends FragmentActivity implements
         int versionCode = 0;
         try {
             // 获取软件版本号，对应AndroidManifest.xml下android:versionCode
-            versionCode = context.getPackageManager().getPackageInfo("com.jxpostt", 0).versionCode;
+            versionCode = context.getPackageManager().getPackageInfo("com.myapplication", 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -212,5 +212,6 @@ public class Activity_Setting extends FragmentActivity implements
     public void onNewVersion() {
         loadingDialog.show();
         Con_Updata con_updata = new Con_Updata(handler);
+        con_updata.getAppVersion();
     }
 }

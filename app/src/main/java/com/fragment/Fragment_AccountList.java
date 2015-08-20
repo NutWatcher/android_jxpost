@@ -58,6 +58,7 @@ public class Fragment_AccountList extends Fragment {
     private SimpleAdapter adapter ;
     private ListView listView ;
     TextView textView ;
+    TextView foot_textView;
     LinearLayout loadingLayout;
     int userId;
 
@@ -160,6 +161,9 @@ public class Fragment_AccountList extends Fragment {
     private void initWidget() {
         listView = (ListView) getActivity().findViewById(R.id.listView);
         textView = (TextView) getActivity().findViewById(R.id.worning);
+        listView.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.foot_view_clear_account, null));
+        foot_textView = (TextView) getActivity().findViewById(R.id.foot_textView);
+
         textView.setVisibility(View.GONE);
 
     }
@@ -193,9 +197,11 @@ public class Fragment_AccountList extends Fragment {
                         //  Log.i("fragment_accountlist","getLastVisiblePosition= "+view.getLastVisiblePosition());
                         //  Log.i("fragment_accountlist","total= "+ total);
                         if (total <= view.getCount()) {
+                            foot_textView.setText("加载完成");
                         }
                         else {
                             mListener.onFragmentAccountGetData(view.getCount(), limit);
+                            foot_textView.setText("正在加载中……");
                         }
                     }
                 }
@@ -238,7 +244,6 @@ public class Fragment_AccountList extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentAccountGetData(int start, int limit);
-
         void onFragmentAccountTouchItem(Account account);
     }
 

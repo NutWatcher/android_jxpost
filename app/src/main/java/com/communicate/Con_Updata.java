@@ -25,7 +25,7 @@ public class Con_Updata extends Con_Base{
     private Map<String, String> params;
     private String result;
     private Handler handler;
-    private static final String URL_USERACCOUNT = "/direct/param_androidSystemInfo";
+    private static final String URL_USERUPDATA = "/direct/param_androidSystemInfo";
 
     private HttpURLConnection conn ;
     private String resultData = "";
@@ -45,13 +45,13 @@ public class Con_Updata extends Con_Base{
         handler.sendMessage(msg);
     }
 
-    public void getAccountList(final int userId, final int start, final int limit) {
+    public void getAppVersion() {
         class downloadApkThread extends Thread {
             @Override
             public void run() {
                 try {
                     params = new HashMap<>();
-                    initCon_Post(URL_USERACCOUNT);
+                    initCon_Post(URL_USERUPDATA);
                     SetParams(params);
                     result = getDate();
                 } catch (IOException e) {
@@ -73,7 +73,6 @@ public class Con_Updata extends Con_Base{
                 }
                 Message msg = new Message();
                 Bundle data = new Bundle();
-                version = 0.1;
                 data.putDouble("version", version);
                 data.putString("url", url);
                 data.putString("method", "app_version");

@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView">
             <TextView
-                android:text="当前日平均"
+                android:text="2015-7-31至2016-3-31日均余额："
                 android:layout_gravity="right"
                 android:textColor="@color/my_deepgray_color"
                 android:layout_width="wrap_content"

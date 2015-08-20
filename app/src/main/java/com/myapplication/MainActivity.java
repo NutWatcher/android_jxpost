@@ -79,7 +79,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
@@ -303,13 +302,11 @@ public class MainActivity extends Activity {
 
     public class MsgReceiver extends BroadcastReceiver {
         private int i = 0;
-
         @Override
         public void onReceive(Context context, Intent intent) {
             //拿到进度，更新UI
             Log.i("broadcast", "come!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             getClearAccount();
         }
-
     }
 }

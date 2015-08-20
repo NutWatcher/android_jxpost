@@ -22,8 +22,8 @@ public class Con_Base extends Thread {
     private String con_url;
 
     //private static final String CON_URL = "http://10.140.0.42:8080/HuResources";
-    //private static final String CON_URL = "http://192.168.1.101:3000";
-    private static final String CON_URL = "http://10.140.25.126:8080/HuResources";
+    private static final String CON_URL = "http://192.168.1.101:3000";
+    //private static final String CON_URL = "http://10.140.25.126:8080/HuResources";
 
 
     Con_Base() {
