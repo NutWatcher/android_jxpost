@@ -1,10 +1,10 @@
 package com.myapplication;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import com.tool.LoadingDialog;
 import java.util.List;
 
 
-public class Activity_DepartmentAccount extends FragmentActivity implements
+public class Activity_Org extends FragmentActivity implements
         Fragment_Org_Balance.OnFragmentInteractionListener {
 
     Context mContext;
@@ -60,7 +60,7 @@ public class Activity_DepartmentAccount extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.activity__department_account);
+        setContentView(R.layout.activity__org);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_account);
         initWidget();
         initData();
@@ -93,8 +93,8 @@ public class Activity_DepartmentAccount extends FragmentActivity implements
     }
     private void onTitleBackButtonClick() {
         dialog.dismiss();
-        Activity_DepartmentAccount.this.setResult(RESULT_OK);
-        Activity_DepartmentAccount.this.finish();
+        Activity_Org.this.setResult(RESULT_OK);
+        Activity_Org.this.finish();
     }
 
     public void onBackPressed() {

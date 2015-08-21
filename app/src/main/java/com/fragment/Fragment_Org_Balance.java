@@ -1,0 +1,140 @@
+package com.fragment;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import com.model.Department;
+import com.model.Org;
+import com.myapplication.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Fragment_Org_Balance extends Fragment {
+    private List<Map<String, String>> dataList = new ArrayList<>();
+    private SimpleAdapter adapter;
+    private ListView listView;
+
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    private String mParam1;
+    private String mParam2;
+
+    private OnFragmentInteractionListener mListener;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle data = msg.getData();
+            String method = data.getString("method");
+            if (method.equals("notifyDataSetInvalidated")) {
+                if (adapter != null) {
+                    adapter.notifyDataSetInvalidated();
+                }
+            }
+        }
+    };
+
+    public static Fragment_Org_Balance newInstance(String param1, String param2) {
+        Fragment_Org_Balance fragment = new Fragment_Org_Balance();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public Fragment_Org_Balance() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_org_balance, container, false);
+    }
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initWidget();
+        initData();
+        initEvent();
+    }
+    private void initWidget() {
+        listView = (ListView) getActivity().findViewById(R.id.lv_org_balance);
+    }
+    private void initData() {
+        mListener.OnFragment_GetOrgBalance();
+        adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_org_item,
+                new String[]{"name", "balance"}, new int[]{R.id.lv_org_name, R.id.lv_org_balance});
+        listView.setAdapter(adapter);
+    }
+
+    private void initEvent() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            }
+        });
+    }
+    public void setViewData(final List<Org> data) {
+        class checkLoginThread extends Thread {
+            @Override
+            public void run() {
+                for (int i = 0; i < data.size(); i++) {
+                    Org org = data.get(i);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", org.getBranchName());
+                    map.put("balance", org.getBalance());
+                    dataList.add(map);
+                }
+                Message msg = new Message();
+                Bundle data = new Bundle();
+                data.putString("method", "notifyDataSetInvalidated");
+                msg.setData(data);
+                handler.sendMessage(msg);
+            }
+        }
+        new checkLoginThread().start();
+    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void OnFragment_GetOrgBalance();
+    }
+
+}

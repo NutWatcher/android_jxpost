@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
     private DB_Account dbHelper;
 
     private String[] titles = new String[]
-            {"个人协储", "部门信息", "网点余额", "设置", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9"};
+            {"个人协储", "部门信息", "网点余额", "设置", "荣誉榜", "努力榜", "pic6", "pic7", "pic8", "pic9"};
     private int[] images = new int[]{
             R.drawable.user_account, R.drawable.department_user_account, R.drawable.shop_account,
             R.drawable.setting, R.drawable.xiechu, R.drawable.xiechu,
@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 
                     startActivityForResult(intent, 1);
                 } else if (id == 2) {
-                    Intent intent = new Intent(MainActivity.this, Activity_DepartmentAccount.class);
+                    Intent intent = new Intent(MainActivity.this, Activity_Org.class);
                     startActivityForResult(intent, 1);
                 } else if (id == 3) {
                     Intent intent = new Intent(MainActivity.this, Activity_Setting.class);
