@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
                     intent.putExtra("fragment", "1");
                     startActivityForResult(intent, 1);
                 } else if (id == 1) {
-                    Intent intent = new Intent(MainActivity.this, Activity_DepartmentUserAccount.class);
+                    Intent intent = new Intent(MainActivity.this, Activity_Department.class);
 
                     startActivityForResult(intent, 1);
                 } else if (id == 2) {

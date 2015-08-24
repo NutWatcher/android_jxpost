@@ -11,10 +11,9 @@ import org.json.JSONObject;
  * Created by 扬洋 on 2015/8/8.
  */
 public class Department implements Parcelable {
-    private String branchName;
-    private String id;
-    private String branchId;
-    private String balance;
+    private String departmentName;
+    private String departmentId;
+    private String finish;
     private String rank;
 
     public Department() {
@@ -22,42 +21,34 @@ public class Department implements Parcelable {
     }
 
     public void setData(JSONObject jsonObject) throws JSONException {
-        this.branchName = jsonObject.getString("branchName") != null ? jsonObject.getString("branchName") : "";
-        this.id = jsonObject.getString("id") != null ? jsonObject.getString("id") : "";
-        this.branchId = jsonObject.getString("branchId") != null ? jsonObject.getString("branchId") : "";
-        this.balance = jsonObject.getString("balance") != null ? jsonObject.getString("balance") : "";
+        this.departmentName = jsonObject.getString("departmentName") != null ? jsonObject.getString("departmentName") : "";
+        this.departmentId = jsonObject.getString("departmentId") != null ? jsonObject.getString("departmentId") : "";
+        this.finish = jsonObject.getString("finish") != null ? jsonObject.getString("finish") : "";
     }
 
-    public String getBranchName() {
-        return branchName;
+    public String getdepartmentName() {
+        return departmentName;
     }
 
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
+    public void setdepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    public String getId() {
-        return id;
+
+    public String getdepartmentId() {
+        return departmentId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setdepartmentId(String departmentId) {
+        this.departmentId = departmentId;
     }
 
-    public String getBranchId() {
-        return branchId;
+    public String getfinish() {
+        return finish;
     }
 
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
+    public void setfinish(String finish) {
+        this.finish = finish;
     }
 
     public String getRank() {
@@ -75,10 +66,9 @@ public class Department implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(branchName);
-        dest.writeString(id);
-        dest.writeString(branchId);
-        dest.writeString(balance);
+        dest.writeString(departmentName);
+        dest.writeString(departmentId);
+        dest.writeString(finish);
         dest.writeString(rank);
     }
 
@@ -93,10 +83,9 @@ public class Department implements Parcelable {
     };
 
     public Department(Parcel in) {
-        branchName = in.readString();
-        id = in.readString();
-        branchId = in.readString();
-        balance = in.readString();
+        departmentName = in.readString();
+        departmentId = in.readString();
+        finish = in.readString();
         rank = in.readString();
     }
 }

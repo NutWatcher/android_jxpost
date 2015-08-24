@@ -27,5 +27,6 @@
     <string name="btn_userListFragment_back_title">后退</string>
     <string name="tv_userListItem_idTag_text">序号</string>
     <string name="tv_userListItem_informationTag_text">信息</string>
+    <string name="title_activity_activity__department">Activity_Department</string>
 
 </resources>

@@ -69,7 +69,7 @@ public class Con_DepartmentAccount extends Con_Base {
                 List<User> dataList_user = new ArrayList<>();
                 JSONArray js_data;
                 try {
-                    js_data = new JSONArray(result);
+                    js_data = new JSONObject(result).getJSONArray("rows");
                     for (int i = 0; i < js_data.length(); i++) {
                         JSONObject jsonObject = (JSONObject) js_data.opt(i);
                         User user = new User();
@@ -90,7 +90,7 @@ public class Con_DepartmentAccount extends Con_Base {
                 Message msg = new Message();
                 Bundle data = new Bundle();
                 data.putParcelableArrayList("rows", (ArrayList<? extends Parcelable>) dataList_user);
-                data.putString("method", "user_list");
+                data.putString("method", "department_user_list");
                 msg.setData(data);
                 handler.sendMessage(msg);
             }
@@ -116,7 +116,7 @@ public class Con_DepartmentAccount extends Con_Base {
                 List<Department> dataList_department = new ArrayList<>();
                 JSONArray js_data;
                 try {
-                    js_data = new JSONArray(result);
+                    js_data = new JSONObject(result).getJSONArray("rows");
                     for (int i = 0; i < js_data.length(); i++) {
                         JSONObject jsonObject = (JSONObject) js_data.opt(i);
                         Department department = new Department();

@@ -42,16 +42,16 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/my_deepgray_color"
-                android:text="当前余额：" />
+                android:text="当前完成率：" />
 
             <TextView
                 android:gravity="end"
-                android:id="@+id/lv_department_balance"
+                android:id="@+id/lv_department_finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/my_deepgray_color"
-                android:text="8000000.00" />
+                android:text="80.45%" />
             <!--
                         <TextView
                             android:layout_gravity="right"

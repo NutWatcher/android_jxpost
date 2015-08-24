@@ -38,7 +38,6 @@ public class Fragment_DepartmentAccountList extends Fragment {
     private List<Map<String, String>> dataList = new ArrayList<>();
     private SimpleAdapter adapter;
     private ListView listView;
-    TextView textView;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -99,36 +98,31 @@ public class Fragment_DepartmentAccountList extends Fragment {
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initWidget();
         initData();
         initEvent();
-        super.onActivityCreated(savedInstanceState);
     }
 
     private void initWidget() {
-
         listView = (ListView) getActivity().findViewById(R.id.account_listView);
-        textView = (TextView) getActivity().findViewById(R.id.tv_worning);
-        textView.setVisibility(View.GONE);
-
     }
 
     private void initData() {
-        mListener.OnFragment_GetDepartmentAccountLIst();
         adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_departmentaccount_item,
-                new String[]{"name", "balance"}, new int[]{R.id.lv_department_name, R.id.lv_department_balance});
+                new String[]{"name", "balance"}, new int[]{R.id.lv_department_name, R.id.lv_department_finish});
         listView.setAdapter(adapter);
+        mListener.OnFragment_GetDepartmentAccountLIst();
     }
 
     private void initEvent() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                int selectedPosition = i;
-//                Map<String, String> map = dataList.get(i);
+                Map<String, String> map = dataList.get(i);
 //                Log.i("select", "name: " + map.get("name") + " rank: " + map.get("rank"));
-//                Log.i("fragment_log", String.valueOf(selectedPosition));
-//                mListener.OnFragment_DepartmentAccountLIst_ListItemClick(Integer.parseInt(map.get("rank")));
+                Log.i("fragment_Department", "departmentId: "+ map.get("departmentId"));
+                mListener.OnFragment_DepartmentAccountLIst_ListItemClick(Integer.parseInt(map.get("departmentId")));
             }
         });
     }
@@ -140,8 +134,8 @@ public class Fragment_DepartmentAccountList extends Fragment {
                 for (int i = 0; i < data.size(); i++) {
                     Department department = data.get(i);
                     Map<String, String> map = new HashMap<>();
-                    map.put("name", department.getBranchName());
-                    map.put("balance", department.getBalance());
+                    map.put("name", department.getdepartmentName());
+                    map.put("balance", department.getfinish());
                     dataList.add(map);
                 }
                 Message msg = new Message();
@@ -182,6 +176,7 @@ public class Fragment_DepartmentAccountList extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void OnFragment_GetDepartmentAccountLIst();
+        void OnFragment_DepartmentAccountLIst_ListItemClick(int departmentId);
     }
 
 }
