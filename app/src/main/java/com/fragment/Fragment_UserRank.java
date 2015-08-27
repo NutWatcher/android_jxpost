@@ -6,18 +6,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
-import com.model.Department;
 import com.model.User;
-import com.myapplication.Activity_AccountList;
 import com.myapplication.R;
 
 import java.util.ArrayList;
@@ -28,16 +26,20 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Fragment_DepartmentAccountList.OnFragmentInteractionListener} interface
+ * {@link Fragment_UserRank.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Fragment_DepartmentAccountList#newInstance} factory method to
+ * Use the {@link Fragment_UserRank#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_DepartmentAccountList extends Fragment {
+public class Fragment_UserRank extends Fragment {
 
-    private List<Map<String, String>> dataList = new ArrayList<>();
-    private SimpleAdapter adapter;
-    private ListView listView;
+    ToggleButton toggleButton;
+    ListView listView ;
+    TextView foot_textView;
+    private List<Map<String, Object>> dataList = new ArrayList<>();
+    private List<User> dataList_user = new ArrayList<>();
+    private SimpleAdapter adapter ;
+
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -51,24 +53,8 @@ public class Fragment_DepartmentAccountList extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_DepartmentAccountList.
+
      */
-    public static Fragment_DepartmentAccountList newInstance(String param1, String param2) {
-        Fragment_DepartmentAccountList fragment = new Fragment_DepartmentAccountList();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public Fragment_DepartmentAccountList() {
-        // Required empty public constructor
-    }
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -77,11 +63,24 @@ public class Fragment_DepartmentAccountList extends Fragment {
             String method = data.getString("method");
             if (method.equals("notifyDataSetInvalidated")) {
                 if (adapter != null) {
-                    adapter.notifyDataSetInvalidated();
+                    adapter.notifyDataSetChanged();
                 }
             }
         }
     };
+    public static Fragment_UserRank newInstance(String param1, String param2) {
+        Fragment_UserRank fragment = new Fragment_UserRank();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public Fragment_UserRank() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +93,8 @@ public class Fragment_DepartmentAccountList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment__department_account_list, container, false);
+        return inflater.inflate(R.layout.fragment_user_rank, null);
     }
-
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidget();
@@ -104,39 +102,46 @@ public class Fragment_DepartmentAccountList extends Fragment {
         initEvent();
     }
 
+
     private void initWidget() {
-        listView = (ListView) getActivity().findViewById(R.id.account_listView);
-    }
-
-    private void initData() {
-        adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_departmentaccount_item,
-                new String[]{"name", "balance"}, new int[]{R.id.lv_department_name, R.id.lv_department_finish});
+        listView = (ListView) getActivity().findViewById(R.id.lv_user_rank_listview);
+        toggleButton = (ToggleButton) getActivity().findViewById(R.id.lv_user_rank_toggleButton);
+        listView.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.foot_view_clear_account, null));
+        foot_textView = (TextView) getActivity().findViewById(R.id.foot_textView);
+        adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_user_rank_item,
+                new String[]{"name","department","score"}, new int[]{R.id.tv_item_username, R.id.tv_item_department, R.id.tv_item_score});
         listView.setAdapter(adapter);
-        mListener.OnFragment_GetDepartmentAccountLIst();
-    }
 
+    }
+    private  void initData(){
+        toggleButton.setChecked(true);
+        mListener.onFragment_UserRank_getData(true);
+    }
     private void initEvent() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, String> map = dataList.get(i);
-//                Log.i("select", "name: " + map.get("name") + " rank: " + map.get("rank"));
-                Log.i("fragment_Department", "departmentId: "+ map.get("departmentId"));
-                mListener.OnFragment_DepartmentAccountLIst_ListItemClick(Integer.parseInt(map.get("departmentId")));
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    mListener.onFragment_UserRank_getData(false);
+                } else {
+                    mListener.onFragment_UserRank_getData(true);
+                }
             }
         });
-    }
 
-    public void setViewData(final List<Department> data) {
-        class checkLoginThread extends Thread {
+    }
+    public void setViewData(final Bundle data, int total) {
+        class setViewDataThread extends Thread {
             @Override
             public void run() {
-                for (int i = 0; i < data.size(); i++) {
-                    Department department = data.get(i);
-                    Map<String, String> map = new HashMap<>();
-                    map.put("name", department.getdepartmentName());
-                    map.put("balance", department.getfinish()+"%");
-                    map.put("departmentId",department.getdepartmentId());
+                dataList.clear();
+                List<User> rows = data.getParcelableArrayList("rows");
+                for (int i = 0; i < rows.size(); i++) {
+                    User user = rows.get(i);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("name", user.getName());
+                    map.put("department",user.getDepartment());
+                    map.put("score", user.getScore());
                     dataList.add(map);
                 }
                 Message msg = new Message();
@@ -146,8 +151,14 @@ public class Fragment_DepartmentAccountList extends Fragment {
                 handler.sendMessage(msg);
             }
         }
-        new checkLoginThread().start();
+        new setViewDataThread().start();
     }
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -176,8 +187,8 @@ public class Fragment_DepartmentAccountList extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void OnFragment_GetDepartmentAccountLIst();
-        void OnFragment_DepartmentAccountLIst_ListItemClick(int departmentId);
+        void onFragmentInteraction(Uri uri);
+        void onFragment_UserRank_getData(boolean isTop);
     }
 
 }

@@ -28,5 +28,6 @@
     <string name="tv_userListItem_idTag_text">序号</string>
     <string name="tv_userListItem_informationTag_text">信息</string>
     <string name="title_activity_activity__department">Activity_Department</string>
+    <string name="title_activity_activity__user_rank">排名榜</string>
 
 </resources>

@@ -1,14 +1,12 @@
 package com.myapplication;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,30 +15,22 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.communicate.Con_DepartmentAccount;
-import com.fragment.Fragment_DepartmentAccountList;
-import com.fragment.Fragment_DepartmentUserAccountList;
-import com.model.Department;
+import com.communicate.Con_User;
+import com.fragment.Fragment_UserRank;
 import com.model.User;
 import com.tool.LoadingDialog;
 
 import java.util.List;
 
 
-public class Activity_Department extends FragmentActivity implements
-    Fragment_DepartmentAccountList.OnFragmentInteractionListener,
-    Fragment_DepartmentUserAccountList.OnFragmentInteractionListener{
+public class Activity_UserRank extends FragmentActivity implements
+        Fragment_UserRank.OnFragmentInteractionListener {
     Context mContext;
     LoadingDialog loadingDialog;
     TextView title_text;
     ImageButton imageButton_Back;
     FragmentManager fragmentManager;
-    Fragment_DepartmentAccountList fragment_departmentAccountList;
-    Fragment_DepartmentUserAccountList fragment_departmentUserAccountList ;
-
-    int flag_now_fragment = 0;
-    static int FRAGMENT_DEPARTMENT_USER_VIEW = 1 ;
-    static int FRAGMENT_DEPARTMENT_VIEW = 0 ;
+    Fragment_UserRank fragment_userRank ;
 
 
     private Handler handler = new Handler() {
@@ -60,23 +50,20 @@ public class Activity_Department extends FragmentActivity implements
                 Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (method.equals("department_list")) {
-                List<Department> rows = data.getParcelableArrayList("rows");
-                fragment_departmentAccountList.setViewData(rows);
-            }
-            else if (method.equals("department_user_list")) {
+            if (method.equals("user_rank_list")) {
                 List<User> rows = data.getParcelableArrayList("rows");
-                fragment_departmentUserAccountList.setViewData(rows);
+                int total = data.getInt("total");
+                fragment_userRank.setViewData(data, total);
             }
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.activity__department);
+        setContentView(R.layout.activity__user_rank);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_account);
+
         initWidget();
         initData();
         initEvent();
@@ -85,17 +72,16 @@ public class Activity_Department extends FragmentActivity implements
         loadingDialog = new LoadingDialog(this);
         title_text = (TextView) findViewById(R.id.title_text);
         imageButton_Back = (ImageButton) findViewById(R.id.title_imageButton_back);
-        fragment_departmentAccountList = new Fragment_DepartmentAccountList() ;
-        fragment_departmentUserAccountList = new Fragment_DepartmentUserAccountList();
+        fragment_userRank = new Fragment_UserRank() ;
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frame, fragment_departmentAccountList);
+        fragmentTransaction.add(R.id.frame, fragment_userRank);
         fragmentTransaction.commit();
     }
 
     private void initData() {
         mContext = this;
-        title_text.setText("部门信息");
+        title_text.setText("排行榜");
     }
 
     private void initEvent() {
@@ -106,25 +92,10 @@ public class Activity_Department extends FragmentActivity implements
             }
         });
     }
-
-    private void changeFragementView(Fragment hide, Fragment show){
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(
-                R.anim.my_slide_in_right, R.anim.abc_fade_out);
-        if (!show.isAdded()) {    // 先判断是否被add过
-            fragmentTransaction.hide(hide).add(R.id.frame, show).commit(); // 隐藏当前的fragment，add下一个到Activity中
-        } else {
-            fragmentTransaction.hide(hide).show(show).commit(); // 隐藏当前的fragment，显示下一个
-        }
-    }
     private void onTitleBackButtonClick() {
-        if (flag_now_fragment == FRAGMENT_DEPARTMENT_USER_VIEW){
-            flag_now_fragment = FRAGMENT_DEPARTMENT_VIEW ;
-            changeFragementView(fragment_departmentUserAccountList, fragment_departmentAccountList);
-            return;
-        }
         loadingDialog.dismiss();
-        Activity_Department.this.setResult(RESULT_OK);
-        Activity_Department.this.finish();
+        Activity_UserRank.this.setResult(RESULT_OK);
+        Activity_UserRank.this.finish();
     }
 
     public void onBackPressed() {
@@ -133,11 +104,10 @@ public class Activity_Department extends FragmentActivity implements
         System.out.println("按下了back键   onBackPressed()");
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity__department, menu);
+        getMenuInflater().inflate(R.menu.menu_activity__user_rank, menu);
         return true;
     }
 
@@ -162,26 +132,14 @@ public class Activity_Department extends FragmentActivity implements
     }
 
     @Override
-    public void onFragmentGetUserInfoList() {
-
-    }
-
-    @Override
-    public void OnFragment_GetDepartmentAccountLIst() {
+    public void onFragment_UserRank_getData(boolean isTop) {
         loadingDialog.show();
-        Con_DepartmentAccount con_departmentAccount = new Con_DepartmentAccount(handler);
-        SharedPreferences sharedPreferences = getSharedPreferences("configure", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();//获取编辑器
-        int userId = Integer.parseInt(sharedPreferences.getString("userId", "0"));
-        con_departmentAccount.getDepartmentAccountList(userId);
-    }
-
-    @Override
-    public void OnFragment_DepartmentAccountLIst_ListItemClick(int departmentId) {
-        flag_now_fragment = FRAGMENT_DEPARTMENT_USER_VIEW ;
-        changeFragementView(fragment_departmentAccountList, fragment_departmentUserAccountList);
-        loadingDialog.show();
-        Con_DepartmentAccount con_departmentAccount = new Con_DepartmentAccount(handler);
-        con_departmentAccount.getDepartmentUserAccountList(departmentId);
+        Con_User con_user = new Con_User(handler);
+        if(isTop){
+            con_user.getUserRank(true);
+        }
+        else{
+            con_user.getUserRank(false);
+        }
     }
 }

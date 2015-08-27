@@ -99,6 +99,9 @@ public class Fragment_AccountList extends Fragment {
             Bundle data = msg.getData();
             String method = data.getString("method");
             if (method.equals("notifyDataSetInvalidated")) {
+                if (total == 0 ){
+                    foot_textView.setText("加载完成共0条记录");
+                }
                 if (adapter != null) {
                     adapter.notifyDataSetChanged();
                 }
@@ -131,8 +134,6 @@ public class Fragment_AccountList extends Fragment {
     /*
     重新加载查询页面
      */
-    public void onGetSearchData(Map<String, String> params) {
-    }
 
     public void setViewData(final Bundle data, int total) {
         this.total = total;
@@ -145,7 +146,7 @@ public class Fragment_AccountList extends Fragment {
                     dataList_account.add(account);
                     Map<String, Object> map = new HashMap<>();
                     map.put("name", account.getCustomerName());
-                    map.put("money", account.getBalance());
+                    map.put("money", account.getBaseBalance());
                     map.put("account", account.getExtUserId());
                     dataList.add(map);
                 }

@@ -209,6 +209,9 @@ public class MainActivity extends Activity {
                 } else if (id == 3) {
                     Intent intent = new Intent(MainActivity.this, Activity_Setting.class);
                     startActivityForResult(intent, 1);
+                }else if (id == 4) {
+                    Intent intent = new Intent(MainActivity.this, Activity_UserRank.class);
+                    startActivityForResult(intent, 1);
                 }
             }
         });

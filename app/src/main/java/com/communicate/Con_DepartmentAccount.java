@@ -30,7 +30,7 @@ public class Con_DepartmentAccount extends Con_Base {
     private String result;
     private Handler handler;
     private static final String URL_DEPARTMENT_USER_ACCOUNT = "/direct/user_androidDepartmentScore";
-    private static final String URL_DEPARTMENT_ACCOUNT = "/direct/branch_androidBranchInfo";
+    private static final String URL_DEPARTMENT_ACCOUNT = "/direct/department_androidDepartmentScore";
 
     private HttpURLConnection conn;
     private String resultData = "";
@@ -98,12 +98,13 @@ public class Con_DepartmentAccount extends Con_Base {
         new downloadApkThread().start();
     }
 
-    public void getDepartmentAccountList() {
+    public void getDepartmentAccountList(final int userId) {
         class downloadApkThread extends Thread {
             @Override
             public void run() {
                 try {
                     params = new HashMap<>();
+                    params.put("userId", String.valueOf(userId));
                     initCon_Post(URL_DEPARTMENT_ACCOUNT);
                     SetParams(params);
                     result = getDate();

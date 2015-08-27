@@ -8,9 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.model.Account;
@@ -28,9 +25,11 @@ public class Fragment_AccountInfo extends Fragment {
 
     TextView tv_account_info_listname;
     TextView tv_account_info_listmoney;
+    TextView tv_account_info_listscore;
     TextView tv_account_info_account;
     TextView tv_account_info_opentime;
     TextView tv_account_info_type;
+    TextView tv_account_info_listclear;
     boolean init = false;
     Account account ;
 
@@ -101,6 +100,13 @@ public class Fragment_AccountInfo extends Fragment {
         tv_account_info_account.setText(account.getExtUserId());
         tv_account_info_opentime.setText(account.getOpenDt());
         tv_account_info_type.setText(account.getType());
+        tv_account_info_listscore.setText(account.getBaseBalance());
+        if (!account.getBaseBalance().equals("正常")) {
+            tv_account_info_listclear.setText(account.getClearFlag());
+        }
+        else {
+            tv_account_info_listclear.setText("");
+        }
     }
 
     private void initWidget() {
@@ -109,6 +115,8 @@ public class Fragment_AccountInfo extends Fragment {
         tv_account_info_account = (TextView) getActivity().findViewById(R.id.tv_account_info_account);
         tv_account_info_opentime = (TextView) getActivity().findViewById(R.id.tv_account_info_opentime);
         tv_account_info_type = (TextView) getActivity().findViewById(R.id.tv_account_info_type);
+        tv_account_info_listscore = (TextView) getActivity().findViewById(R.id.tv_account_info_listscore);
+        tv_account_info_listclear = (TextView) getActivity().findViewById(R.id.tv_account_info_listclear);
     }
 
     private void initData() {

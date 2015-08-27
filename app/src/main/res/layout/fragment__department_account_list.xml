@@ -6,12 +6,6 @@
     android:background="@color/my_gray_color"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/tv_worning"
-        android:text="@string/hello_blank_fragment" />
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
