@@ -73,6 +73,9 @@ public class Activity_Setting extends FragmentActivity implements
             else if (method.equals("app_version")) {
                 isUpdate(data);
             }
+            else if (method.equals("app_not_updata")) {
+                Toast.makeText(mContext, "当前已经是最新版本！", Toast.LENGTH_SHORT).show();
+            }
         }
     };
     public Activity_Setting() {
@@ -163,6 +166,14 @@ public class Activity_Setting extends FragmentActivity implements
                     Intent it = new Intent(Intent.ACTION_VIEW, uri);
                     it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
                     startActivity(it);
+                }
+                else{
+                    Message msg = new Message();
+                    Bundle data = new Bundle();
+                    data.putString("method", "app_not_updata");
+                    msg.setData(data);
+                    handler.sendMessage(msg);
+
                 }
             }
         }

@@ -20,6 +20,7 @@
     <string name="title_activity_activity__department_account">biaoti</string>
     <string name="title_activity_activity__setting">Activity_Setting</string>
     <string name="title_activity_activity__department_user_account">Activity_DepartmentUserAccount</string>
+    <string name="title_activity_activity__org">Activity_Org</string>
 
     <string name="et_loginFragment_name_hint">姓名</string>
     <string name="et_loginFragment_password_hint">密码</string>

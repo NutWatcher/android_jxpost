@@ -70,11 +70,10 @@ public class MainActivity extends Activity {
     private DB_Account dbHelper;
 
     private String[] titles = new String[]
-            {"个人协储", "部门信息", "网点余额", "设置", "荣誉榜", "努力榜", "pic6", "pic7", "pic8", "pic9"};
+            {"个人协储", "部门完成情况", "网点余额", "设置", "荣誉榜"};
     private int[] images = new int[]{
             R.drawable.user_account, R.drawable.department_user_account, R.drawable.shop_account,
-            R.drawable.setting, R.drawable.xiechu, R.drawable.xiechu,
-            R.drawable.xiechu, R.drawable.xiechu, R.drawable.xiechu
+            R.drawable.setting, R.drawable.xiechu
     };
 
     @Override
@@ -86,7 +85,7 @@ public class MainActivity extends Activity {
         initData();
         initEvent();
         checkLogin();
-        setClock();
+        //setClock();
     }
 
     @Override

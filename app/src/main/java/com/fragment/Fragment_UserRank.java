@@ -106,7 +106,7 @@ public class Fragment_UserRank extends Fragment {
     private void initWidget() {
         listView = (ListView) getActivity().findViewById(R.id.lv_user_rank_listview);
         toggleButton = (ToggleButton) getActivity().findViewById(R.id.lv_user_rank_toggleButton);
-        listView.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.foot_view_clear_account, null));
+       // listView.addFooterView(getActivity().getLayoutInflater().inflate(R.layout.foot_view_clear_account, null));
         foot_textView = (TextView) getActivity().findViewById(R.id.foot_textView);
         adapter = new SimpleAdapter(getActivity().getApplicationContext(), dataList, R.layout.listview_user_rank_item,
                 new String[]{"name","department","score"}, new int[]{R.id.tv_item_username, R.id.tv_item_department, R.id.tv_item_score});
