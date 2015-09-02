@@ -61,16 +61,19 @@
             android:exported="true" />
 
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:name=".Activity_Department"
             android:label="@string/title_activity_activity__department" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:name=".Activity_UserRank"
             android:label="@string/title_activity_activity__user_rank" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:name=".Activity_Org"
             android:label="@string/title_activity_activity__org" >

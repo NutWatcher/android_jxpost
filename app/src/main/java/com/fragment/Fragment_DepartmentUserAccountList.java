@@ -126,6 +126,7 @@ public class Fragment_DepartmentUserAccountList extends Fragment {
         class checkLoginThread extends Thread {
             @Override
             public void run() {
+                dataList.clear();
                 for (int i = 0; i < data.size(); i++) {
                     User user = data.get(i);
                     Map<String, String> map = new HashMap<>();
